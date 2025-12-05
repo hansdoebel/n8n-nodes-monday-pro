@@ -25,6 +25,12 @@ export const boardWebhookOperations: INodeProperties[] = [
 				action: "Delete webhook",
 				description: "Delete an existing webhook by its ID",
 			},
+			{
+				name: "Get Many",
+				value: "getAll",
+				action: "Get webhooks",
+				description: "List webhooks created on a board",
+			},
 		],
 		default: "create",
 	},
@@ -46,7 +52,7 @@ export const boardWebhookFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ["boardWebhook"],
-				operation: ["create"],
+				operation: ["create", "getAll"],
 			},
 		},
 		description:
@@ -142,6 +148,42 @@ export const boardWebhookFields: INodeProperties[] = [
 			},
 		],
 	},
+	/* -------------------------------------------------------------------------- */
+	/*                               boardWebhook:getAll                          */
+	/* -------------------------------------------------------------------------- */
+	{
+		displayName: "Return All",
+		name: "returnAll",
+		type: "boolean",
+		default: true,
+		displayOptions: {
+			show: {
+				resource: ["boardWebhook"],
+				operation: ["getAll"],
+			},
+		},
+		description:
+			"Whether to return all webhooks or limit the number of results",
+	},
+	{
+		displayName: "Limit",
+		name: "limit",
+		type: "number",
+		default: 50,
+		typeOptions: {
+			minValue: 1,
+			maxValue: 200,
+		},
+		displayOptions: {
+			show: {
+				resource: ["boardWebhook"],
+				operation: ["getAll"],
+				returnAll: [false],
+			},
+		},
+		description: "Max number of webhooks to return",
+	},
+
 	/* -------------------------------------------------------------------------- */
 	/*                               boardWebhook:delete                          */
 	/* -------------------------------------------------------------------------- */
