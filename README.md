@@ -12,6 +12,9 @@ It is an independent enhancement created for advanced workflow use cases.
 
 ## 📁 Features
 
+- **Current API-Version: 2025-10**
+- OAuth2 and API Token authentication
+
 Create and manage:
 
 - **Boards**
@@ -19,10 +22,10 @@ Create and manage:
 - **Board groups**
 - **Board items**
 - **Subitems** *(new – not included in the official node!)*
+- **Webhooks** *(new – not included in the official node!)*
 - Update column values (single or multiple)
 - Query items by column value
 - Pagination support for large boards
-- OAuth2 and API Token authentication
 
 This package is ideal if you want more control over Monday.com data or if you need functionality missing in the default n8n Monday node.
 
@@ -62,4 +65,4 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 
 ## 📜 Version history
 
-- `0.0.1` – Initial release with extended Monday.com API support and Subitem creation
+- `0.0.1` – Initial release with extended Monday.com API support and Subitem creation, create/delete/list Webhooks
