@@ -24,6 +24,10 @@ import {
 	boardItemOperations,
 } from "./descriptions/BoardItemDescription";
 import {
+	boardSubitemFields,
+	boardSubitemOperations,
+} from "./descriptions/BoardSubitemDescription";
+import {
 	mondayProApiPaginatedRequest,
 	mondayProApiRequest,
 	mondayProApiRequestAllItems,
@@ -108,6 +112,10 @@ export class MondayPro implements INodeType {
 						name: "Board Item",
 						value: "boardItem",
 					},
+					{
+						name: "Board Subitem",
+						value: "boardSubitem",
+					},
 				],
 				default: "board",
 			},
@@ -123,13 +131,14 @@ export class MondayPro implements INodeType {
 			// BOARD ITEM
 			...boardItemOperations,
 			...boardItemFields,
+			// BOARD SUBITEM
+			...boardSubitemOperations,
+			...boardSubitemFields,
 		],
 	};
 
 	methods = {
 		loadOptions: {
-			// Get all the available boards to display them to user so that they can
-			// select them easily
 			async getBoards(
 				this: ILoadOptionsFunctions,
 			): Promise<INodePropertyOptions[]> {
@@ -167,8 +176,7 @@ export class MondayPro implements INodeType {
 				}
 				return returnData;
 			},
-			// Get all the available columns to display them to user so that they can
-			// select them easily
+
 			async getColumns(
 				this: ILoadOptionsFunctions,
 			): Promise<INodePropertyOptions[]> {
@@ -203,8 +211,6 @@ export class MondayPro implements INodeType {
 				}
 				return returnData;
 			},
-			// Get all the available groups to display them to user so that they can
-			// select them easily
 			async getGroups(
 				this: ILoadOptionsFunctions,
 			): Promise<INodePropertyOptions[]> {
@@ -820,6 +826,73 @@ export class MondayPro implements INodeType {
 						responseData = responseData.data.move_item_to_group;
 					}
 				}
+				if (resource === "boardSubitem") {
+					if (operation === "create") {
+						const parentItemId = this.getNodeParameter("itemId", i);
+						const subitemName = this.getNodeParameter("name", i) as string;
+						const additionalFields = this.getNodeParameter(
+							"additionalFields",
+							i,
+							{},
+						) as IDataObject;
+
+						const body: IGraphqlBody = {
+							query: `mutation (
+								$parentItemId: ID!,
+								$subitemName: String!,
+								$columnValues: JSON
+							) {
+								create_subitem(
+									parent_item_id: $parentItemId,
+									item_name: $subitemName,
+									column_values: $columnValues
+								) {
+									id
+									name
+									board {
+										id
+									}
+									column_values {
+										id
+										text
+										type
+										value
+										column {
+											title
+											archived
+											description
+											settings_str
+										}
+									}
+								}
+							}`,
+							variables: {
+								parentItemId,
+								subitemName,
+							},
+						};
+
+						if (additionalFields.columnValues) {
+							try {
+								JSON.parse(additionalFields.columnValues as string);
+							} catch (error) {
+								throw new NodeOperationError(
+									this.getNode(),
+									"Column values must be valid JSON",
+									{ itemIndex: i },
+								);
+							}
+
+							body.variables.columnValues = JSON.stringify(
+								JSON.parse(additionalFields.columnValues as string),
+							);
+						}
+
+						const response = await mondayProApiRequest.call(this, body);
+						responseData = response.data.create_subitem;
+					}
+				}
+
 				const executionData = this.helpers.constructExecutionMetaData(
 					this.helpers.returnJsonArray(responseData as IDataObject),
 					{ itemData: { item: i } },
