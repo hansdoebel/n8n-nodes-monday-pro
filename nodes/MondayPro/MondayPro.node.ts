@@ -740,7 +740,22 @@ export class MondayPro implements INodeType {
 					}
 
 					if (operation === "getFiltered") {
-						const boardId = this.getNodeParameter("boardId", i);
+						const rawBoardId = this.getNodeParameter("boardId", i) as
+							| string
+							| string[];
+
+						let boardIds: string[];
+						if (Array.isArray(rawBoardId)) {
+							boardIds = rawBoardId;
+						} else if (typeof rawBoardId === "string") {
+							boardIds = rawBoardId
+								.split(",")
+								.map((id) => id.trim())
+								.filter(Boolean);
+						} else {
+							boardIds = [];
+						}
+
 						const returnAll = this.getNodeParameter("returnAll", i) as boolean;
 
 						let fieldsToReturn = `
@@ -766,6 +781,27 @@ export class MondayPro implements INodeType {
 								);
 							}
 						}
+
+						const queryParamsJson = this.getNodeParameter(
+							"queryParams",
+							i,
+							"",
+						) as string;
+
+						let queryParams: IDataObject | undefined;
+
+						if (queryParamsJson) {
+							try {
+								queryParams = JSON.parse(queryParamsJson) as IDataObject;
+							} catch (error) {
+								throw new NodeOperationError(
+									this.getNode(),
+									"Query Parameters must be valid JSON",
+									{ itemIndex: i },
+								);
+							}
+						}
+
 						const limit = returnAll
 							? 500
 							: (this.getNodeParameter("limit", i) as number);
@@ -784,8 +820,9 @@ export class MondayPro implements INodeType {
 								}
 							}`,
 							variables: {
-								boardId,
+								boardId: boardIds,
 								limit,
+								...(queryParams && { queryParams }),
 							},
 						};
 

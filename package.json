@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-monday-pro",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "Extended Monday.com module for custom n8n node.",
 	"keywords": [
 		"n8n-community-node-package",
