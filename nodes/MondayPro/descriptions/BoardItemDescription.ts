@@ -1,73 +1,80 @@
-import type { INodeProperties } from 'n8n-workflow';
+import type { INodeProperties } from "n8n-workflow";
 
 export const boardItemOperations: INodeProperties[] = [
 	{
-		displayName: 'Operation',
-		name: 'operation',
-		type: 'options',
+		displayName: "Operation",
+		name: "operation",
+		type: "options",
 		noDataExpression: true,
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
+				resource: ["boardItem"],
 			},
 		},
 		options: [
 			{
-				name: 'Add Update',
-				value: 'addUpdate',
-				description: 'Add an update to an item',
-				action: 'Add an update to an item',
+				name: "Add Update",
+				value: "addUpdate",
+				description: "Add an update to an item",
+				action: "Add an update to an item",
 			},
 			{
-				name: 'Change Column Value',
-				value: 'changeColumnValue',
-				description: 'Change a column value for a board item',
-				action: 'Change a column value for a board item',
+				name: "Change Column Value",
+				value: "changeColumnValue",
+				description: "Change a column value for a board item",
+				action: "Change a column value for a board item",
 			},
 			{
-				name: 'Change Multiple Column Values',
-				value: 'changeMultipleColumnValues',
-				description: 'Change multiple column values for a board item',
-				action: 'Change multiple column values for a board item',
+				name: "Change Multiple Column Values",
+				value: "changeMultipleColumnValues",
+				description: "Change multiple column values for a board item",
+				action: "Change multiple column values for a board item",
 			},
 			{
-				name: 'Create',
-				value: 'create',
+				name: "Create",
+				value: "create",
 				description: "Create an item in a board's group",
 				action: "Create an item in a board's group",
 			},
 			{
-				name: 'Delete',
-				value: 'delete',
-				description: 'Delete an item',
-				action: 'Delete an item',
+				name: "Delete",
+				value: "delete",
+				description: "Delete an item",
+				action: "Delete an item",
 			},
 			{
-				name: 'Get',
-				value: 'get',
-				description: 'Get an item',
-				action: 'Get an item',
+				name: "Get",
+				value: "get",
+				description: "Get an item",
+				action: "Get an item",
 			},
 			{
-				name: 'Get By Column Value',
-				value: 'getByColumnValue',
-				description: 'Get items by column value',
-				action: 'Get items item by column value',
+				name: "Get By Column Value",
+				value: "getByColumnValue",
+				description: "Get items by column value",
+				action: "Get items item by column value",
 			},
 			{
-				name: 'Get Many',
-				value: 'getAll',
-				description: 'Get many items',
-				action: 'Get many items',
+				name: "Get Filtered",
+				value: "getFiltered",
+				action: "Get filtered items",
+				description:
+					"Get items from a board using items_page filters (query_params.rules)",
 			},
 			{
-				name: 'Move',
-				value: 'move',
-				description: 'Move item to group',
-				action: 'Move an item to a group',
+				name: "Get Many",
+				value: "getAll",
+				description: "Get many items",
+				action: "Get many items",
+			},
+			{
+				name: "Move",
+				value: "move",
+				description: "Move item to group",
+				action: "Move an item to a group",
 			},
 		],
-		default: 'create',
+		default: "create",
 	},
 ];
 
@@ -76,97 +83,97 @@ export const boardItemFields: INodeProperties[] = [
 	/*                                 boardItem:addUpdate                         */
 	/* -------------------------------------------------------------------------- */
 	{
-		displayName: 'Item ID',
-		name: 'itemId',
-		type: 'string',
-		default: '',
+		displayName: "Item ID",
+		name: "itemId",
+		type: "string",
+		default: "",
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['addUpdate'],
+				resource: ["boardItem"],
+				operation: ["addUpdate"],
 			},
 		},
-		description: 'The unique identifier of the item to add update to',
+		description: "The unique identifier of the item to add update to",
 	},
 	{
-		displayName: 'Update Text',
-		name: 'value',
-		type: 'string',
+		displayName: "Update Text",
+		name: "value",
+		type: "string",
 		required: true,
-		default: '',
+		default: "",
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['addUpdate'],
+				resource: ["boardItem"],
+				operation: ["addUpdate"],
 			},
 		},
-		description: 'The update text to add',
+		description: "The update text to add",
 	},
 	/* -------------------------------------------------------------------------- */
 	/*                                 boardItem:changeColumnValue                */
 	/* -------------------------------------------------------------------------- */
 	{
-		displayName: 'Board Name or ID',
-		name: 'boardId',
-		type: 'options',
+		displayName: "Board Name or ID",
+		name: "boardId",
+		type: "options",
 		typeOptions: {
-			loadOptionsMethod: 'getBoards',
+			loadOptionsMethod: "getBoards",
 		},
-		default: '',
+		default: "",
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['changeColumnValue'],
+				resource: ["boardItem"],
+				operation: ["changeColumnValue"],
 			},
 		},
 		description:
 			'The unique identifier of the board. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 	},
 	{
-		displayName: 'Item ID',
-		name: 'itemId',
-		type: 'string',
-		default: '',
+		displayName: "Item ID",
+		name: "itemId",
+		type: "string",
+		default: "",
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['changeColumnValue'],
+				resource: ["boardItem"],
+				operation: ["changeColumnValue"],
 			},
 		},
-		description: 'The unique identifier of the item to change column of',
+		description: "The unique identifier of the item to change column of",
 	},
 	{
-		displayName: 'Column Name or ID',
-		name: 'columnId',
-		type: 'options',
+		displayName: "Column Name or ID",
+		name: "columnId",
+		type: "options",
 		typeOptions: {
-			loadOptionsMethod: 'getColumns',
-			loadOptionsDependsOn: ['boardId'],
+			loadOptionsMethod: "getColumns",
+			loadOptionsDependsOn: ["boardId"],
 		},
-		default: '',
+		default: "",
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['changeColumnValue'],
+				resource: ["boardItem"],
+				operation: ["changeColumnValue"],
 			},
 		},
 		description:
 			'The column\'s unique identifier. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 	},
 	{
-		displayName: 'Value',
-		name: 'value',
-		type: 'json',
+		displayName: "Value",
+		name: "value",
+		type: "json",
 		required: true,
-		default: '',
+		default: "",
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['changeColumnValue'],
+				resource: ["boardItem"],
+				operation: ["changeColumnValue"],
 			},
 		},
 		description:
@@ -176,47 +183,47 @@ export const boardItemFields: INodeProperties[] = [
 	/*                                 boardItem:changeMultipleColumnValues       */
 	/* -------------------------------------------------------------------------- */
 	{
-		displayName: 'Board Name or ID',
-		name: 'boardId',
-		type: 'options',
+		displayName: "Board Name or ID",
+		name: "boardId",
+		type: "options",
 		typeOptions: {
-			loadOptionsMethod: 'getBoards',
+			loadOptionsMethod: "getBoards",
 		},
-		default: '',
+		default: "",
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['changeMultipleColumnValues'],
+				resource: ["boardItem"],
+				operation: ["changeMultipleColumnValues"],
 			},
 		},
 		description:
 			'The unique identifier of the board. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 	},
 	{
-		displayName: 'Item ID',
-		name: 'itemId',
-		type: 'string',
-		default: '',
+		displayName: "Item ID",
+		name: "itemId",
+		type: "string",
+		default: "",
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['changeMultipleColumnValues'],
+				resource: ["boardItem"],
+				operation: ["changeMultipleColumnValues"],
 			},
 		},
 		description: "Item's ID",
 	},
 	{
-		displayName: 'Column Values',
-		name: 'columnValues',
-		type: 'json',
+		displayName: "Column Values",
+		name: "columnValues",
+		type: "json",
 		required: true,
-		default: '',
+		default: "",
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['changeMultipleColumnValues'],
+				resource: ["boardItem"],
+				operation: ["changeMultipleColumnValues"],
 			},
 		},
 		description:
@@ -229,78 +236,78 @@ export const boardItemFields: INodeProperties[] = [
 	/*                                 boardItem:create                           */
 	/* -------------------------------------------------------------------------- */
 	{
-		displayName: 'Board Name or ID',
-		name: 'boardId',
-		type: 'options',
+		displayName: "Board Name or ID",
+		name: "boardId",
+		type: "options",
 		description:
 			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 		typeOptions: {
-			loadOptionsMethod: 'getBoards',
+			loadOptionsMethod: "getBoards",
 		},
-		default: '',
+		default: "",
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['create'],
+				resource: ["boardItem"],
+				operation: ["create"],
 			},
 		},
 	},
 	{
-		displayName: 'Group Name or ID',
-		name: 'groupId',
-		type: 'options',
+		displayName: "Group Name or ID",
+		name: "groupId",
+		type: "options",
 		description:
 			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-		default: '',
+		default: "",
 		typeOptions: {
-			loadOptionsMethod: 'getGroups',
-			loadOptionsDependsOn: ['boardId'],
+			loadOptionsMethod: "getGroups",
+			loadOptionsDependsOn: ["boardId"],
 		},
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['create'],
+				resource: ["boardItem"],
+				operation: ["create"],
 			},
 		},
 	},
 	{
-		displayName: 'Name',
-		name: 'name',
-		type: 'string',
+		displayName: "Name",
+		name: "name",
+		type: "string",
 		required: true,
 		displayOptions: {
 			show: {
-				operation: ['create'],
-				resource: ['boardItem'],
+				operation: ["create"],
+				resource: ["boardItem"],
 			},
 		},
-		default: '',
+		default: "",
 		description: "The new item's name",
 	},
 	{
-		displayName: 'Additional Fields',
-		name: 'additionalFields',
-		type: 'collection',
-		placeholder: 'Add Field',
+		displayName: "Additional Fields",
+		name: "additionalFields",
+		type: "collection",
+		placeholder: "Add Field",
 		displayOptions: {
 			show: {
-				operation: ['create'],
-				resource: ['boardItem'],
+				operation: ["create"],
+				resource: ["boardItem"],
 			},
 		},
 		default: {},
 		options: [
 			{
-				displayName: 'Column Values',
-				name: 'columnValues',
-				type: 'json',
+				displayName: "Column Values",
+				name: "columnValues",
+				type: "json",
 				typeOptions: {
 					alwaysOpenEditWindow: true,
 				},
-				default: '',
-				description: 'The column values of the new item',
+				default: "",
+				description: "The column values of the new item",
 			},
 		],
 	},
@@ -308,15 +315,15 @@ export const boardItemFields: INodeProperties[] = [
 	/*                                 boardItem:delete                           */
 	/* -------------------------------------------------------------------------- */
 	{
-		displayName: 'Item ID',
-		name: 'itemId',
-		type: 'string',
-		default: '',
+		displayName: "Item ID",
+		name: "itemId",
+		type: "string",
+		default: "",
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['delete'],
+				resource: ["boardItem"],
+				operation: ["delete"],
 			},
 		},
 		description: "Item's ID",
@@ -325,15 +332,15 @@ export const boardItemFields: INodeProperties[] = [
 	/*                                 boardItem:get                              */
 	/* -------------------------------------------------------------------------- */
 	{
-		displayName: 'Item ID',
-		name: 'itemId',
-		type: 'string',
-		default: '',
+		displayName: "Item ID",
+		name: "itemId",
+		type: "string",
+		default: "",
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['get'],
+				resource: ["boardItem"],
+				operation: ["get"],
 			},
 		},
 		description: "Item's ID (Multiple can be added separated by comma)",
@@ -342,63 +349,63 @@ export const boardItemFields: INodeProperties[] = [
 	/*                                 boardItem:getAll                           */
 	/* -------------------------------------------------------------------------- */
 	{
-		displayName: 'Board Name or ID',
-		name: 'boardId',
-		type: 'options',
+		displayName: "Board Name or ID",
+		name: "boardId",
+		type: "options",
 		description:
 			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-		default: '',
+		default: "",
 		typeOptions: {
-			loadOptionsMethod: 'getBoards',
+			loadOptionsMethod: "getBoards",
 		},
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['getAll'],
+				resource: ["boardItem"],
+				operation: ["getAll"],
 			},
 		},
 	},
 	{
-		displayName: 'Group Name or ID',
-		name: 'groupId',
-		default: '',
-		type: 'options',
+		displayName: "Group Name or ID",
+		name: "groupId",
+		default: "",
+		type: "options",
 		description:
 			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 		typeOptions: {
-			loadOptionsMethod: 'getGroups',
-			loadOptionsDependsOn: ['boardId'],
+			loadOptionsMethod: "getGroups",
+			loadOptionsDependsOn: ["boardId"],
 		},
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['getAll'],
+				resource: ["boardItem"],
+				operation: ["getAll"],
 			},
 		},
 	},
 	{
-		displayName: 'Return All',
-		name: 'returnAll',
-		type: 'boolean',
+		displayName: "Return All",
+		name: "returnAll",
+		type: "boolean",
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['getAll'],
+				resource: ["boardItem"],
+				operation: ["getAll"],
 			},
 		},
 		default: false,
-		description: 'Whether to return all results or only up to a given limit',
+		description: "Whether to return all results or only up to a given limit",
 	},
 	{
-		displayName: 'Limit',
-		name: 'limit',
-		type: 'number',
+		displayName: "Limit",
+		name: "limit",
+		type: "number",
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['getAll'],
+				resource: ["boardItem"],
+				operation: ["getAll"],
 				returnAll: [false],
 			},
 		},
@@ -407,83 +414,168 @@ export const boardItemFields: INodeProperties[] = [
 			maxValue: 100,
 		},
 		default: 50,
-		description: 'Max number of results to return',
+		description: "Max number of results to return",
 	},
+	/* -------------------------------------------------------------------------- */
+	/*                              boardItem:getFiltered                         */
+	/* -------------------------------------------------------------------------- */
+	{
+		displayName: "Board Name or ID",
+		name: "boardId",
+		type: "options",
+		description:
+			"Board to read items from. Choose from the list, or specify an ID using an expression.",
+		default: "",
+		required: true,
+		typeOptions: {
+			loadOptionsMethod: "getBoards",
+		},
+		displayOptions: {
+			show: {
+				resource: ["boardItem"],
+				operation: ["getFiltered"],
+			},
+		},
+	},
+	{
+		displayName: "Return All",
+		name: "returnAll",
+		type: "boolean",
+		default: true,
+		description: "Whether to return all results or only up to a given limit",
+		displayOptions: {
+			show: {
+				resource: ["boardItem"],
+				operation: ["getFiltered"],
+			},
+		},
+	},
+	{
+		displayName: "Limit",
+		name: "limit",
+		type: "number",
+		default: 100,
+		typeOptions: {
+			minValue: 1,
+			maxValue: 500,
+		},
+		description: "Max number of items to return",
+		displayOptions: {
+			show: {
+				resource: ["boardItem"],
+				operation: ["getFiltered"],
+				returnAll: [false],
+			},
+		},
+	},
+	{
+		displayName: "Query Parameters (JSON)",
+		name: "queryParams",
+		type: "json",
+		default: "",
+		typeOptions: {
+			alwaysOpenEditWindow: true,
+		},
+		description:
+			"The items_page query_params object as JSON (rules, operator, order_by). See Monday “Items Page” docs.",
+		displayOptions: {
+			show: {
+				resource: ["boardItem"],
+				operation: ["getFiltered"],
+			},
+		},
+	},
+	{
+		displayName: "Fields JSON",
+		name: "fieldsJson",
+		type: "string",
+		typeOptions: { rows: 6 },
+		default: "",
+		placeholder: `{
+  "id": true,
+  "column_values": {
+    "ids": "phone",
+    "fields": ["text"]
+  }
+}`,
+		description: "Define GraphQL return fields via JSON.",
+	},
+
 	/* -------------------------------------------------------------------------- */
 	/*                                 boardItem:getByColumnValue                 */
 	/* -------------------------------------------------------------------------- */
 	{
-		displayName: 'Board Name or ID',
-		name: 'boardId',
-		type: 'options',
+		displayName: "Board Name or ID",
+		name: "boardId",
+		type: "options",
 		typeOptions: {
-			loadOptionsMethod: 'getBoards',
+			loadOptionsMethod: "getBoards",
 		},
-		default: '',
+		default: "",
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['getByColumnValue'],
+				resource: ["boardItem"],
+				operation: ["getByColumnValue"],
 			},
 		},
 		description:
 			'The unique identifier of the board. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 	},
 	{
-		displayName: 'Column Name or ID',
-		name: 'columnId',
-		type: 'options',
+		displayName: "Column Name or ID",
+		name: "columnId",
+		type: "options",
 		typeOptions: {
-			loadOptionsMethod: 'getColumns',
-			loadOptionsDependsOn: ['boardId'],
+			loadOptionsMethod: "getColumns",
+			loadOptionsDependsOn: ["boardId"],
 		},
-		default: '',
+		default: "",
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['getByColumnValue'],
+				resource: ["boardItem"],
+				operation: ["getByColumnValue"],
 			},
 		},
 		description:
 			'The column\'s unique identifier. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 	},
 	{
-		displayName: 'Column Value',
-		name: 'columnValue',
-		type: 'string',
+		displayName: "Column Value",
+		name: "columnValue",
+		type: "string",
 		required: true,
-		default: '',
+		default: "",
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['getByColumnValue'],
+				resource: ["boardItem"],
+				operation: ["getByColumnValue"],
 			},
 		},
-		description: 'The column value to search items by',
+		description: "The column value to search items by",
 	},
 	{
-		displayName: 'Return All',
-		name: 'returnAll',
-		type: 'boolean',
+		displayName: "Return All",
+		name: "returnAll",
+		type: "boolean",
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['getByColumnValue'],
+				resource: ["boardItem"],
+				operation: ["getByColumnValue"],
 			},
 		},
 		default: false,
-		description: 'Whether to return all results or only up to a given limit',
+		description: "Whether to return all results or only up to a given limit",
 	},
 	{
-		displayName: 'Limit',
-		name: 'limit',
-		type: 'number',
+		displayName: "Limit",
+		name: "limit",
+		type: "number",
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['getByColumnValue'],
+				resource: ["boardItem"],
+				operation: ["getByColumnValue"],
 				returnAll: [false],
 			},
 		},
@@ -492,59 +584,59 @@ export const boardItemFields: INodeProperties[] = [
 			maxValue: 100,
 		},
 		default: 50,
-		description: 'Max number of results to return',
+		description: "Max number of results to return",
 	},
 	/* -------------------------------------------------------------------------- */
 	/*                                 boardItem:move                             */
 	/* -------------------------------------------------------------------------- */
 	{
-		displayName: 'Board Name or ID',
-		name: 'boardId',
-		type: 'options',
+		displayName: "Board Name or ID",
+		name: "boardId",
+		type: "options",
 		description:
 			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 		typeOptions: {
-			loadOptionsMethod: 'getBoards',
+			loadOptionsMethod: "getBoards",
 		},
-		default: '',
+		default: "",
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['move'],
+				resource: ["boardItem"],
+				operation: ["move"],
 			},
 		},
 	},
 	{
-		displayName: 'Item ID',
-		name: 'itemId',
-		type: 'string',
+		displayName: "Item ID",
+		name: "itemId",
+		type: "string",
 		required: true,
 		displayOptions: {
 			show: {
-				operation: ['move'],
-				resource: ['boardItem'],
+				operation: ["move"],
+				resource: ["boardItem"],
 			},
 		},
-		default: '',
+		default: "",
 		description: "The item's ID",
 	},
 	{
-		displayName: 'Group Name or ID',
-		name: 'groupId',
-		type: 'options',
+		displayName: "Group Name or ID",
+		name: "groupId",
+		type: "options",
 		description:
 			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-		default: '',
+		default: "",
 		typeOptions: {
-			loadOptionsMethod: 'getGroups',
-			loadOptionsDependsOn: ['boardId'],
+			loadOptionsMethod: "getGroups",
+			loadOptionsDependsOn: ["boardId"],
 		},
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['boardItem'],
-				operation: ['move'],
+				resource: ["boardItem"],
+				operation: ["move"],
 			},
 		},
 	},

@@ -38,9 +38,52 @@ import {
 	mondayProApiRequestAllItems,
 } from "./GenericFunctions";
 
-interface IGraphqlBody {
+interface IGraphqlBody extends IDataObject {
 	query: string;
 	variables: IDataObject;
+}
+
+function jsonToGraphqlFields(obj: IDataObject | null | undefined): string {
+	const build = (o: IDataObject): string => {
+		if (!o) return "";
+
+		return Object.entries(o as Record<string, unknown>)
+			.map(([key, value]) => {
+				if (value === true) return key;
+
+				if (value && typeof value === "object" && !Array.isArray(value)) {
+					const args: string[] = [];
+					const subFields: string[] = [];
+
+					for (
+						const [k, v] of Object.entries(
+							value as Record<string, unknown>,
+						)
+					) {
+						if (k === "fields") {
+							subFields.push(...(v as string[]));
+							continue;
+						}
+						args.push(`${k}: ${JSON.stringify(v)}`);
+					}
+
+					const argString = args.length > 0 ? `(${args.join(", ")})` : "";
+					const subString = subFields.length > 0
+						? ` {\n${subFields.join("\n")}\n}`
+						: "";
+
+					return `${key}${argString}${subString}`;
+				}
+
+				return "";
+			})
+			.filter((line) => line !== "")
+			.join("\n");
+	};
+
+	if (!obj) return "{}";
+
+	return `{${build(obj)}\n}`;
 }
 
 export class MondayPro implements INodeType {
@@ -155,7 +198,7 @@ export class MondayPro implements INodeType {
 				this: ILoadOptionsFunctions,
 			): Promise<INodePropertyOptions[]> {
 				const returnData: INodePropertyOptions[] = [];
-				const body = {
+				const body: IGraphqlBody = {
 					query: `query ($page: Int, $limit: Int) {
 							boards (page: $page, limit: $limit){
 								id
@@ -228,7 +271,7 @@ export class MondayPro implements INodeType {
 			): Promise<INodePropertyOptions[]> {
 				const returnData: INodePropertyOptions[] = [];
 				const boardId = this.getCurrentNodeParameter("boardId") as string;
-				const body = {
+				const body: IGraphqlBody = {
 					query: `query ($boardId: ID!) {
 							boards ( ids: [$boardId]){
 								groups {
@@ -695,6 +738,70 @@ export class MondayPro implements INodeType {
 						responseData = await mondayProApiRequest.call(this, body);
 						responseData = responseData.data.items;
 					}
+
+					if (operation === "getFiltered") {
+						const boardId = this.getNodeParameter("boardId", i);
+						const returnAll = this.getNodeParameter("returnAll", i) as boolean;
+
+						let fieldsToReturn = `
+						{
+							id
+						}`;
+
+						const fieldsJson = this.getNodeParameter(
+							"fieldsJson",
+							i,
+							"",
+						) as string;
+
+						if (fieldsJson) {
+							try {
+								const parsed = JSON.parse(fieldsJson) as IDataObject;
+								fieldsToReturn = jsonToGraphqlFields(parsed);
+							} catch (error) {
+								throw new NodeOperationError(
+									this.getNode(),
+									"Fields JSON must be valid JSON",
+									{ itemIndex: i },
+								);
+							}
+						}
+						const limit = returnAll
+							? 500
+							: (this.getNodeParameter("limit", i) as number);
+
+						const body: IGraphqlBody = {
+							query:
+								`query ($boardId: [ID!], $limit: Int, $queryParams: ItemsQuery) {
+								boards(ids: $boardId) {
+									items_page(
+										limit: $limit,
+										query_params: $queryParams
+									) {
+										cursor
+										items ${fieldsToReturn}
+									}
+								}
+							}`,
+							variables: {
+								boardId,
+								limit,
+							},
+						};
+
+						if (returnAll) {
+							responseData = await mondayProApiPaginatedRequest.call(
+								this,
+								"data.boards[0].items_page",
+								fieldsToReturn,
+								body,
+							);
+						} else {
+							const response = await mondayProApiRequest.call(this, body);
+							responseData = response.data.boards[0].items_page.items;
+						}
+					}
+
 					if (operation === "getAll") {
 						const boardId = this.getNodeParameter("boardId", i);
 						const groupId = this.getNodeParameter("groupId", i) as string;
@@ -721,7 +828,7 @@ export class MondayPro implements INodeType {
 						}
 						`;
 
-						const body = {
+						const body: IGraphqlBody = {
 							query: `query ($boardId: [ID!], $groupId: [String], $limit: Int) {
 								boards(ids: $boardId) {
 									groups(ids: $groupId) {
@@ -745,7 +852,7 @@ export class MondayPro implements INodeType {
 								this,
 								"data.boards[0].groups[0].items_page",
 								fieldsToReturn,
-								body as IDataObject,
+								body,
 							);
 						} else {
 							body.variables.limit = this.getNodeParameter("limit", i);
@@ -784,7 +891,7 @@ export class MondayPro implements INodeType {
 								}
 							}
 						}`;
-						const body = {
+						const body: IGraphqlBody = {
 							query:
 								`query ($boardId: ID!, $columnId: String!, $columnValue: String!, $limit: Int) {
 								items_page_by_column_values(
@@ -809,7 +916,7 @@ export class MondayPro implements INodeType {
 								this,
 								"data.items_page_by_column_values",
 								fieldsToReturn,
-								body as IDataObject,
+								body,
 							);
 						} else {
 							body.variables.limit = this.getNodeParameter("limit", i);
@@ -846,7 +953,7 @@ export class MondayPro implements INodeType {
 							"additionalFields",
 							i,
 							{},
-						) as IDataObject;
+						) as IGraphqlBody;
 
 						const body: IGraphqlBody = {
 							query: `mutation (
@@ -913,7 +1020,7 @@ export class MondayPro implements INodeType {
 							"additionalFields",
 							i,
 							{},
-						) as IDataObject;
+						) as IGraphqlBody;
 
 						const body: IGraphqlBody = {
 							query: `mutation (
@@ -998,7 +1105,7 @@ export class MondayPro implements INodeType {
 						};
 
 						const response = await mondayProApiRequest.call(this, body);
-						let webhooks = (response.data.webhooks ?? []) as IDataObject[];
+						let webhooks = (response.data.webhooks ?? []) as IGraphqlBody[];
 
 						if (!returnAll) {
 							const limit = this.getNodeParameter("limit", i) as number;
@@ -1010,7 +1117,7 @@ export class MondayPro implements INodeType {
 				}
 
 				const executionData = this.helpers.constructExecutionMetaData(
-					this.helpers.returnJsonArray(responseData as IDataObject),
+					this.helpers.returnJsonArray(responseData as IGraphqlBody),
 					{ itemData: { item: i } },
 				);
 
