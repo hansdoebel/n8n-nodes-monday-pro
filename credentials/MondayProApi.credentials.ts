@@ -8,7 +8,7 @@ import type {
 export class MondayProApi implements ICredentialType {
 	name = "mondayProApi";
 
-	displayName = "Monday.com API";
+	displayName = "Monday.com (Pro) API";
 
 	documentationUrl = "mondaycom";
 

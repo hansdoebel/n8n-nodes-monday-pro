@@ -7,7 +7,7 @@ export class MondayProOAuth2Api implements ICredentialType {
 
 	extends = ["oAuth2Api"];
 
-	displayName = "Monday.com OAuth2 API";
+	displayName = "Monday.com (Pro) OAuth2 API";
 
 	documentationUrl = "mondaycom";
 
