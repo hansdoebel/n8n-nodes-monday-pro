@@ -28,6 +28,11 @@ import {
 	boardSubitemOperations,
 } from "./descriptions/BoardSubitemDescription";
 import {
+	boardWebhookFields,
+	boardWebhookOperations,
+} from "./descriptions/BoardWebhookDescription";
+
+import {
 	mondayProApiPaginatedRequest,
 	mondayProApiRequest,
 	mondayProApiRequestAllItems,
@@ -116,6 +121,10 @@ export class MondayPro implements INodeType {
 						name: "Board Subitem",
 						value: "boardSubitem",
 					},
+					{
+						name: "Board Webhook",
+						value: "boardWebhook",
+					},
 				],
 				default: "board",
 			},
@@ -134,6 +143,9 @@ export class MondayPro implements INodeType {
 			// BOARD SUBITEM
 			...boardSubitemOperations,
 			...boardSubitemFields,
+			// BOARD WEBHOOK
+			...boardWebhookOperations,
+			...boardWebhookFields,
 		],
 	};
 
@@ -890,6 +902,63 @@ export class MondayPro implements INodeType {
 
 						const response = await mondayProApiRequest.call(this, body);
 						responseData = response.data.create_subitem;
+					}
+				}
+				if (resource === "boardWebhook") {
+					if (operation === "create") {
+						const boardId = this.getNodeParameter("boardId", i);
+						const url = this.getNodeParameter("url", i) as string;
+						const event = this.getNodeParameter("event", i) as string;
+						const additionalFields = this.getNodeParameter(
+							"additionalFields",
+							i,
+							{},
+						) as IDataObject;
+
+						const body: IGraphqlBody = {
+							query: `mutation (
+								$boardId: ID!,
+								$url: String!,
+								$event: WebhookEventType!,
+								$config: JSON
+							) {
+								create_webhook(
+									board_id: $boardId,
+									url: $url,
+									event: $event,
+									config: $config
+								) {
+									id
+									board_id
+									event
+									config
+								}
+							}`,
+							variables: {
+								boardId,
+								url,
+								event,
+							},
+						};
+
+						if (additionalFields.config) {
+							try {
+								JSON.parse(additionalFields.config as string);
+							} catch (error) {
+								throw new NodeOperationError(
+									this.getNode(),
+									"Config must be valid JSON",
+									{ itemIndex: i },
+								);
+							}
+
+							body.variables.config = JSON.stringify(
+								JSON.parse(additionalFields.config as string),
+							);
+						}
+
+						const response = await mondayProApiRequest.call(this, body);
+						responseData = response.data.create_webhook;
 					}
 				}
 
