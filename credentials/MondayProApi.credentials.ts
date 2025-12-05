@@ -10,7 +10,8 @@ export class MondayProApi implements ICredentialType {
 
 	displayName = "Monday.com (Pro) API";
 
-	documentationUrl = "mondaycom";
+	documentationUrl =
+		"https://developer.monday.com/api-reference/docs/authentication";
 
 	properties: INodeProperties[] = [
 		{

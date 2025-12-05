@@ -99,8 +99,8 @@ export class MondayPro implements INodeType {
 			name: "Monday.com (Pro)",
 		},
 		usableAsTool: true,
-		inputs: [NodeConnectionTypes.Main],
-		outputs: [NodeConnectionTypes.Main],
+		inputs: ['main'],
+		outputs: ['main'],
 		credentials: [
 			{
 				name: "mondayProApi",

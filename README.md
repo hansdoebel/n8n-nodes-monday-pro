@@ -20,7 +20,7 @@ Create and manage:
 - **Boards**
 - **Board columns**
 - **Board groups**
-- **Board items**
+- **Board items** (+ with options to filter requested items and choose response data via JSON)
 - **Subitems** *(new – not included in the official node!)*
 - **Webhooks** *(new – not included in the official node!)*
 - Update column values (single or multiple)
@@ -65,4 +65,5 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 
 ## 📜 Version history
 
+- `0.0.2` - Added options to filter requested items and choose response data via JSON
 - `0.0.1` – Initial release with extended Monday.com API support and Subitem creation, create/delete/list Webhooks

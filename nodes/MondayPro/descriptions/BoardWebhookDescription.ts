@@ -56,7 +56,7 @@ export const boardWebhookFields: INodeProperties[] = [
 			},
 		},
 		description:
-			"Board to subscribe webhooks for. Choose from the list, or specify an ID using an expression.",
+			'Board to subscribe webhooks for. Choose from the list, or specify an ID using an expression. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 	},
 	{
 		displayName: "Webhook URL",
@@ -85,9 +85,12 @@ export const boardWebhookFields: INodeProperties[] = [
 			},
 		},
 		options: [
-			{ name: "Create Item", value: "create_item" },
-			{ name: "Create Subitem", value: "create_subitem" },
 			{ name: "Change Column Value", value: "change_column_value" },
+			{ name: "Change Item Name", value: "change_name" },
+			{
+				name: "Change Specific Column Value",
+				value: "change_specific_column_value",
+			},
 			{
 				name: "Change Status Column Value",
 				value: "change_status_column_value",
@@ -96,11 +99,14 @@ export const boardWebhookFields: INodeProperties[] = [
 				name: "Change Subitem Column Value",
 				value: "change_subitem_column_value",
 			},
-			{
-				name: "Change Specific Column Value",
-				value: "change_specific_column_value",
-			},
-			{ name: "Change Item Name", value: "change_name" },
+			{ name: "Change Subitem Name", value: "change_subitem_name" },
+			{ name: "Create Column", value: "create_column" },
+			{ name: "Create Item", value: "create_item" },
+			{ name: "Create Subitem", value: "create_subitem" },
+			{ name: "Create Subitem Update", value: "create_subitem_update" },
+			{ name: "Create Update", value: "create_update" },
+			{ name: "Delete Update", value: "delete_update" },
+			{ name: "Edit Update", value: "edit_update" },
 			{ name: "Item Archived", value: "item_archived" },
 			{ name: "Item Deleted", value: "item_deleted" },
 			{ name: "Item Moved to Any Group", value: "item_moved_to_any_group" },
@@ -109,15 +115,9 @@ export const boardWebhookFields: INodeProperties[] = [
 				value: "item_moved_to_specific_group",
 			},
 			{ name: "Item Restored", value: "item_restored" },
-			{ name: "Change Subitem Name", value: "change_subitem_name" },
 			{ name: "Move Subitem", value: "move_subitem" },
 			{ name: "Subitem Archived", value: "subitem_archived" },
 			{ name: "Subitem Deleted", value: "subitem_deleted" },
-			{ name: "Create Column", value: "create_column" },
-			{ name: "Create Update", value: "create_update" },
-			{ name: "Edit Update", value: "edit_update" },
-			{ name: "Delete Update", value: "delete_update" },
-			{ name: "Create Subitem Update", value: "create_subitem_update" },
 		],
 		description:
 			"Which Monday event should trigger this webhook (see Monday Webhooks documentation)",
@@ -162,8 +162,7 @@ export const boardWebhookFields: INodeProperties[] = [
 				operation: ["getAll"],
 			},
 		},
-		description:
-			"Whether to return all webhooks or limit the number of results",
+		description: "Whether to return all results or only up to a given limit",
 	},
 	{
 		displayName: "Limit",
@@ -172,7 +171,6 @@ export const boardWebhookFields: INodeProperties[] = [
 		default: 50,
 		typeOptions: {
 			minValue: 1,
-			maxValue: 200,
 		},
 		displayOptions: {
 			show: {
@@ -181,7 +179,7 @@ export const boardWebhookFields: INodeProperties[] = [
 				returnAll: [false],
 			},
 		},
-		description: "Max number of webhooks to return",
+		description: "Max number of results to return",
 	},
 
 	/* -------------------------------------------------------------------------- */

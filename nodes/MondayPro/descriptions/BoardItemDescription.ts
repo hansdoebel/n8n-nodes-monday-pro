@@ -34,7 +34,7 @@ export const boardItemOperations: INodeProperties[] = [
 				name: "Create",
 				value: "create",
 				description: "Create an item in a board's group",
-				action: "Create an item in a board's group",
+				action: 'Create an item in a board s group',
 			},
 			{
 				name: "Delete",
@@ -411,7 +411,6 @@ export const boardItemFields: INodeProperties[] = [
 		},
 		typeOptions: {
 			minValue: 1,
-			maxValue: 100,
 		},
 		default: 50,
 		description: "Max number of results to return",
@@ -423,8 +422,7 @@ export const boardItemFields: INodeProperties[] = [
 		displayName: "Board Name or ID",
 		name: "boardId",
 		type: "options",
-		description:
-			"Board to read items from. Choose from the list, or specify an ID using an expression.",
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 		default: "",
 		required: true,
 		typeOptions: {
@@ -454,12 +452,11 @@ export const boardItemFields: INodeProperties[] = [
 		displayName: "Limit",
 		name: "limit",
 		type: "number",
-		default: 100,
+		default: 50,
 		typeOptions: {
 			minValue: 1,
-			maxValue: 500,
 		},
-		description: "Max number of items to return",
+		description: "Max number of results to return",
 		displayOptions: {
 			show: {
 				resource: ["boardItem"],
@@ -488,17 +485,19 @@ export const boardItemFields: INodeProperties[] = [
 	{
 		displayName: "Fields JSON",
 		name: "fieldsJson",
-		type: "string",
-		typeOptions: { rows: 6 },
+		type: "json",
+		typeOptions: {
+			alwaysOpenEditWindow: true,
+		},
 		default: "",
 		placeholder: `{
-  "id": true,
-  "column_values": {
-    "ids": "phone",
-    "fields": ["text"]
-  }
-}`,
-		description: "Define GraphQL return fields via JSON.",
+		  "id": true,
+		  "column_values": {
+		    "ids": "phone",
+		    "fields": ["text"]
+		  }
+		}`,
+		description: 'Define GraphQL return fields via JSON',
 	},
 
 	/* -------------------------------------------------------------------------- */
@@ -581,7 +580,6 @@ export const boardItemFields: INodeProperties[] = [
 		},
 		typeOptions: {
 			minValue: 1,
-			maxValue: 100,
 		},
 		default: 50,
 		description: "Max number of results to return",
