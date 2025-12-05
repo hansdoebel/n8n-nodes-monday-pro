@@ -24,9 +24,9 @@ import {
 	boardItemOperations,
 } from "./descriptions/BoardItemDescription";
 import {
-	mondayComApiPaginatedRequest,
-	mondayComApiRequest,
-	mondayComApiRequestAllItems,
+	mondayProApiPaginatedRequest,
+	mondayProApiRequest,
+	mondayProApiRequestAllItems,
 } from "./GenericFunctions";
 
 interface IGraphqlBody {
@@ -34,7 +34,7 @@ interface IGraphqlBody {
 	variables: IDataObject;
 }
 
-export class MondayCom implements INodeType {
+export class MondayPro implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: "Monday.com (Pro)",
 		name: "mondayPro",
@@ -146,7 +146,7 @@ export class MondayCom implements INodeType {
 						page: 1,
 					},
 				};
-				const boards = await mondayComApiRequestAllItems.call(
+				const boards = await mondayProApiRequestAllItems.call(
 					this,
 					"data.boards",
 					body,
@@ -187,7 +187,7 @@ export class MondayCom implements INodeType {
 						boardId,
 					},
 				};
-				const { data } = await mondayComApiRequest.call(this, body);
+				const { data } = await mondayProApiRequest.call(this, body);
 				if (data === undefined) {
 					return returnData;
 				}
@@ -223,7 +223,7 @@ export class MondayCom implements INodeType {
 						boardId,
 					},
 				};
-				const { data } = await mondayComApiRequest.call(this, body);
+				const { data } = await mondayProApiRequest.call(this, body);
 				if (data === undefined) {
 					return returnData;
 				}
@@ -266,7 +266,7 @@ export class MondayCom implements INodeType {
 							},
 						};
 
-						responseData = await mondayComApiRequest.call(this, body);
+						responseData = await mondayProApiRequest.call(this, body);
 						responseData = responseData.data.archive_board;
 					}
 					if (operation === "create") {
@@ -294,7 +294,7 @@ export class MondayCom implements INodeType {
 							body.variables.templateId = additionalFields.templateId as number;
 						}
 
-						responseData = await mondayComApiRequest.call(this, body);
+						responseData = await mondayProApiRequest.call(this, body);
 						responseData = responseData.data.create_board;
 					}
 					if (operation === "get") {
@@ -319,7 +319,7 @@ export class MondayCom implements INodeType {
 							},
 						};
 
-						responseData = await mondayComApiRequest.call(this, body);
+						responseData = await mondayProApiRequest.call(this, body);
 						responseData = responseData.data.boards;
 					}
 					if (operation === "getAll") {
@@ -345,14 +345,14 @@ export class MondayCom implements INodeType {
 						};
 
 						if (returnAll) {
-							responseData = await mondayComApiRequestAllItems.call(
+							responseData = await mondayProApiRequestAllItems.call(
 								this,
 								"data.boards",
 								body,
 							);
 						} else {
 							body.variables.limit = this.getNodeParameter("limit", i);
-							responseData = await mondayComApiRequest.call(this, body);
+							responseData = await mondayProApiRequest.call(this, body);
 							responseData = responseData.data.boards;
 						}
 					}
@@ -398,7 +398,7 @@ export class MondayCom implements INodeType {
 							);
 						}
 
-						responseData = await mondayComApiRequest.call(this, body);
+						responseData = await mondayProApiRequest.call(this, body);
 						responseData = responseData.data.create_column;
 					}
 					if (operation === "getAll") {
@@ -422,7 +422,7 @@ export class MondayCom implements INodeType {
 							},
 						};
 
-						responseData = await mondayComApiRequest.call(this, body);
+						responseData = await mondayProApiRequest.call(this, body);
 						responseData = responseData.data.boards[0].columns;
 					}
 				}
@@ -443,7 +443,7 @@ export class MondayCom implements INodeType {
 							},
 						};
 
-						responseData = await mondayComApiRequest.call(this, body);
+						responseData = await mondayProApiRequest.call(this, body);
 						responseData = responseData.data.create_group;
 					}
 					if (operation === "delete") {
@@ -462,7 +462,7 @@ export class MondayCom implements INodeType {
 							},
 						};
 
-						responseData = await mondayComApiRequest.call(this, body);
+						responseData = await mondayProApiRequest.call(this, body);
 						responseData = responseData.data.delete_group;
 					}
 					if (operation === "getAll") {
@@ -486,7 +486,7 @@ export class MondayCom implements INodeType {
 							},
 						};
 
-						responseData = await mondayComApiRequest.call(this, body);
+						responseData = await mondayProApiRequest.call(this, body);
 						responseData = responseData.data.boards[0].groups;
 					}
 				}
@@ -507,7 +507,7 @@ export class MondayCom implements INodeType {
 							},
 						};
 
-						responseData = await mondayComApiRequest.call(this, body);
+						responseData = await mondayProApiRequest.call(this, body);
 						responseData = responseData.data.create_update;
 					}
 					if (operation === "changeColumnValue") {
@@ -543,7 +543,7 @@ export class MondayCom implements INodeType {
 						}
 						body.variables.value = JSON.stringify(JSON.parse(value));
 
-						responseData = await mondayComApiRequest.call(this, body);
+						responseData = await mondayProApiRequest.call(this, body);
 						responseData = responseData.data.change_column_value;
 					}
 					if (operation === "changeMultipleColumnValues") {
@@ -582,7 +582,7 @@ export class MondayCom implements INodeType {
 							JSON.parse(columnValues),
 						);
 
-						responseData = await mondayComApiRequest.call(this, body);
+						responseData = await mondayProApiRequest.call(this, body);
 						responseData = responseData.data.change_multiple_column_values;
 					}
 					if (operation === "create") {
@@ -625,7 +625,7 @@ export class MondayCom implements INodeType {
 							);
 						}
 
-						responseData = await mondayComApiRequest.call(this, body);
+						responseData = await mondayProApiRequest.call(this, body);
 						responseData = responseData.data.create_item;
 					}
 					if (operation === "delete") {
@@ -641,7 +641,7 @@ export class MondayCom implements INodeType {
 								itemId,
 							},
 						};
-						responseData = await mondayComApiRequest.call(this, body);
+						responseData = await mondayProApiRequest.call(this, body);
 						responseData = responseData.data.delete_item;
 					}
 					if (operation === "get") {
@@ -674,7 +674,7 @@ export class MondayCom implements INodeType {
 								itemId: itemIds,
 							},
 						};
-						responseData = await mondayComApiRequest.call(this, body);
+						responseData = await mondayProApiRequest.call(this, body);
 						responseData = responseData.data.items;
 					}
 					if (operation === "getAll") {
@@ -723,7 +723,7 @@ export class MondayCom implements INodeType {
 						};
 
 						if (returnAll) {
-							responseData = await mondayComApiPaginatedRequest.call(
+							responseData = await mondayProApiPaginatedRequest.call(
 								this,
 								"data.boards[0].groups[0].items_page",
 								fieldsToReturn,
@@ -731,7 +731,7 @@ export class MondayCom implements INodeType {
 							);
 						} else {
 							body.variables.limit = this.getNodeParameter("limit", i);
-							responseData = await mondayComApiRequest.call(this, body);
+							responseData = await mondayProApiRequest.call(this, body);
 							responseData =
 								responseData.data.boards[0].groups[0].items_page.items;
 						}
@@ -787,7 +787,7 @@ export class MondayCom implements INodeType {
 						};
 
 						if (returnAll) {
-							responseData = await mondayComApiPaginatedRequest.call(
+							responseData = await mondayProApiPaginatedRequest.call(
 								this,
 								"data.items_page_by_column_values",
 								fieldsToReturn,
@@ -795,7 +795,7 @@ export class MondayCom implements INodeType {
 							);
 						} else {
 							body.variables.limit = this.getNodeParameter("limit", i);
-							responseData = await mondayComApiRequest.call(this, body);
+							responseData = await mondayProApiRequest.call(this, body);
 							responseData =
 								responseData.data.items_page_by_column_values.items;
 						}
@@ -816,7 +816,7 @@ export class MondayCom implements INodeType {
 							},
 						};
 
-						responseData = await mondayComApiRequest.call(this, body);
+						responseData = await mondayProApiRequest.call(this, body);
 						responseData = responseData.data.move_item_to_group;
 					}
 				}

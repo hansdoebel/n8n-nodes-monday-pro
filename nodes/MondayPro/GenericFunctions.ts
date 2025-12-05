@@ -10,7 +10,7 @@ import type {
 } from "n8n-workflow";
 import { NodeApiError } from "n8n-workflow";
 
-export async function mondayComApiRequest(
+export async function mondayProApiRequest(
 	this:
 		| IExecuteFunctions
 		| IWebhookFunctions
@@ -53,7 +53,7 @@ export async function mondayComApiRequest(
 	}
 }
 
-export async function mondayComApiRequestAllItems(
+export async function mondayProApiRequestAllItems(
 	this: IHookFunctions | IExecuteFunctions | ILoadOptionsFunctions,
 	propertyName: string,
 	body: any = {},
@@ -65,7 +65,7 @@ export async function mondayComApiRequestAllItems(
 	body.variables.page = 1;
 
 	do {
-		responseData = await mondayComApiRequest.call(this, body);
+		responseData = await mondayProApiRequest.call(this, body);
 		returnData.push.apply(
 			returnData,
 			get(responseData, propertyName) as IDataObject[],
@@ -75,7 +75,7 @@ export async function mondayComApiRequestAllItems(
 	return returnData;
 }
 
-export async function mondayComApiPaginatedRequest(
+export async function mondayProApiPaginatedRequest(
 	this: IHookFunctions | IExecuteFunctions | ILoadOptionsFunctions,
 	itemsPath: string,
 	fieldsToReturn: string,
@@ -83,7 +83,7 @@ export async function mondayComApiPaginatedRequest(
 ) {
 	const returnData: IDataObject[] = [];
 
-	const initialResponse = await mondayComApiRequest.call(this, body);
+	const initialResponse = await mondayProApiRequest.call(this, body);
 	const data = get(initialResponse, itemsPath) as IDataObject;
 
 	if (data) {
@@ -93,7 +93,7 @@ export async function mondayComApiPaginatedRequest(
 
 		while (cursor) {
 			const responseData = (
-				(await mondayComApiRequest.call(this, {
+				(await mondayProApiRequest.call(this, {
 					query:
 						`query ( $cursor: String!) { next_items_page (cursor: $cursor, limit: 100) { cursor items ${fieldsToReturn} } }`,
 					variables: {
