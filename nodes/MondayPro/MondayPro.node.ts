@@ -1,5 +1,5 @@
 import { snakeCase } from "change-case";
-import { NodeConnectionTypes, NodeOperationError } from "n8n-workflow";
+import { NodeOperationError } from "n8n-workflow";
 import type {
 	IDataObject,
 	IExecuteFunctions,
@@ -99,8 +99,8 @@ export class MondayPro implements INodeType {
 			name: "Monday.com (Pro)",
 		},
 		usableAsTool: true,
-		inputs: ['main'],
-		outputs: ['main'],
+		inputs: ["main"],
+		outputs: ["main"],
 		credentials: [
 			{
 				name: "mondayProApi",
