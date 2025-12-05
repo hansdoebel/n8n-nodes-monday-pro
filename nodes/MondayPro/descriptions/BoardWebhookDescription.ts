@@ -19,6 +19,12 @@ export const boardWebhookOperations: INodeProperties[] = [
 				description:
 					"Create a webhook for a board to receive events at a custom URL",
 			},
+			{
+				name: "Delete",
+				value: "delete",
+				action: "Delete webhook",
+				description: "Delete an existing webhook by its ID",
+			},
 		],
 		default: "create",
 	},
@@ -135,5 +141,22 @@ export const boardWebhookFields: INodeProperties[] = [
 					"Optional webhook configuration (for events like change_specific_column_value, change_status_column_value, etc.)",
 			},
 		],
+	},
+	/* -------------------------------------------------------------------------- */
+	/*                               boardWebhook:delete                          */
+	/* -------------------------------------------------------------------------- */
+	{
+		displayName: "Webhook ID",
+		name: "webhookId",
+		type: "string",
+		default: "",
+		required: true,
+		displayOptions: {
+			show: {
+				resource: ["boardWebhook"],
+				operation: ["delete"],
+			},
+		},
+		description: "The ID of the webhook to delete",
 	},
 ];

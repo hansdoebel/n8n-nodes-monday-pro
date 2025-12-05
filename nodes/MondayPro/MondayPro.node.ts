@@ -960,6 +960,24 @@ export class MondayPro implements INodeType {
 						const response = await mondayProApiRequest.call(this, body);
 						responseData = response.data.create_webhook;
 					}
+
+					if (operation === "delete") {
+						const webhookId = this.getNodeParameter("webhookId", i) as string;
+
+						const body: IGraphqlBody = {
+							query: `mutation ($webhookId: ID!) {
+								delete_webhook (id: $webhookId) {
+									id
+								}
+							}`,
+							variables: {
+								webhookId,
+							},
+						};
+
+						const response = await mondayProApiRequest.call(this, body);
+						responseData = response.data.delete_webhook;
+					}
 				}
 
 				const executionData = this.helpers.constructExecutionMetaData(
