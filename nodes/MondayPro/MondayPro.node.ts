@@ -31,6 +31,10 @@ import {
 	boardWebhookFields,
 	boardWebhookOperations,
 } from "./descriptions/BoardWebhookDescription";
+import {
+	folderFields,
+	folderOperations,
+} from "./descriptions/FolderDescription";
 
 import {
 	mondayProApiPaginatedRequest,
@@ -168,6 +172,10 @@ export class MondayPro implements INodeType {
 						name: "Board Webhook",
 						value: "boardWebhook",
 					},
+					{
+						name: "Folder",
+						value: "folder",
+					},
 				],
 				default: "board",
 			},
@@ -189,6 +197,9 @@ export class MondayPro implements INodeType {
 			// BOARD WEBHOOK
 			...boardWebhookOperations,
 			...boardWebhookFields,
+			// FOLDER
+			...folderOperations,
+			...folderFields,
 		],
 	};
 
@@ -1150,6 +1161,203 @@ export class MondayPro implements INodeType {
 						}
 
 						responseData = webhooks;
+					}
+				}
+
+				if (resource === "folder") {
+					if (operation === "create") {
+						const workspaceId = this.getNodeParameter(
+							"workspaceId",
+							i,
+						) as string;
+						const name = this.getNodeParameter("name", i) as string;
+						const additionalFields = this.getNodeParameter(
+							"additionalFields",
+							i,
+							{},
+						) as IDataObject;
+
+						const body: IGraphqlBody = {
+							query: `mutation (
+								$workspaceId: ID!,
+								$name: String!,
+								$color: FolderColor,
+								$parentFolderId: ID
+							) {
+								create_folder(
+									workspace_id: $workspaceId,
+									name: $name,
+									color: $color,
+									parent_folder_id: $parentFolderId
+								) {
+									id
+									name
+									color
+									workspace {
+										id
+									}
+									parent {
+										id
+									}
+								}
+							}`,
+							variables: {
+								workspaceId,
+								name,
+							},
+						};
+
+						if (additionalFields.color) {
+							body.variables.color = additionalFields.color as string;
+						}
+						if (additionalFields.parentFolderId) {
+							body.variables.parentFolderId = additionalFields
+								.parentFolderId as string;
+						}
+
+						const response = await mondayProApiRequest.call(this, body);
+						responseData = response.data.create_folder;
+					}
+
+					if (operation === "getAll") {
+						const workspaceIdsRaw = this.getNodeParameter(
+							"workspaceIds",
+							i,
+							"",
+						) as string;
+						const folderIdsRaw = this.getNodeParameter(
+							"folderIds",
+							i,
+							"",
+						) as string;
+						const returnAll = this.getNodeParameter("returnAll", i) as boolean;
+
+						const workspace_ids = workspaceIdsRaw
+							?.split(",")
+							.map((id) => id.trim())
+							.filter(Boolean) || undefined;
+
+						const ids = folderIdsRaw
+							?.split(",")
+							.map((id) => id.trim())
+							.filter(Boolean) || undefined;
+
+						const limit = returnAll
+							? 100
+							: (this.getNodeParameter("limit", i) as number);
+
+						const body: IGraphqlBody = {
+							query: `query (
+								$workspace_ids: [ID],
+								$ids: [ID],
+								$limit: Int
+							) {
+								folders(
+									workspace_ids: $workspace_ids,
+									ids: $ids,
+									limit: $limit
+								) {
+									id
+									name
+									color
+									workspace {
+										id
+									}
+									parent {
+										id
+									}
+								}
+							}`,
+							variables: {
+								limit,
+								...(workspace_ids && { workspace_ids }),
+								...(ids && { ids }),
+							},
+						};
+
+						const response = await mondayProApiRequest.call(this, body);
+						let folders = (response.data.folders ?? []) as IDataObject[];
+
+						if (!returnAll) {
+							folders = folders.slice(0, limit);
+						}
+
+						responseData = folders;
+					}
+
+					if (operation === "update") {
+						const folderId = this.getNodeParameter("folderId", i) as string;
+						const updateFields = this.getNodeParameter(
+							"updateFields",
+							i,
+							{},
+						) as IDataObject;
+
+						const body: IGraphqlBody = {
+							query: `mutation (
+								$folderId: ID!,
+								$name: String,
+								$color: FolderColor,
+								$parentFolderId: ID,
+								$workspaceId: ID
+							) {
+								update_folder(
+									id: $folderId,
+									name: $name,
+									color: $color,
+									parent_folder_id: $parentFolderId,
+									workspace_id: $workspaceId
+								) {
+									id
+									name
+									color
+									workspace {
+										id
+									}
+									parent {
+										id
+									}
+								}
+							}`,
+							variables: {
+								folderId,
+							},
+						};
+
+						if (updateFields.name) {
+							body.variables.name = updateFields.name as string;
+						}
+						if (updateFields.color) {
+							body.variables.color = updateFields.color as string;
+						}
+						if (updateFields.parentFolderId) {
+							body.variables.parentFolderId = updateFields
+								.parentFolderId as string;
+						}
+						if (updateFields.workspaceId) {
+							body.variables.workspaceId = updateFields.workspaceId as string;
+						}
+
+						const response = await mondayProApiRequest.call(this, body);
+						responseData = response.data.update_folder;
+					}
+
+					if (operation === "delete") {
+						const folderId = this.getNodeParameter("folderId", i) as string;
+
+						const body: IGraphqlBody = {
+							query: `mutation ($folderId: ID!) {
+								delete_folder (id: $folderId) {
+									id
+								}
+							}`,
+							variables: {
+								folderId,
+							},
+						};
+
+						const response = await mondayProApiRequest.call(this, body);
+						responseData = response.data.delete_folder;
 					}
 				}
 

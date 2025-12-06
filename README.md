@@ -65,5 +65,7 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 
 ## 📜 Version history
 
+- `0.0.4` - Added folder operations: get many, update, delete, create
+- `0.0.3` - Fix
 - `0.0.2` - Added options to filter requested items and choose response data via JSON
 - `0.0.1` – Initial release with extended Monday.com API support and Subitem creation, create/delete/list Webhooks
