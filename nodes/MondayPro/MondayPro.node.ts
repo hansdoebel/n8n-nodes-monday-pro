@@ -12,6 +12,7 @@ import { boardGroupDescription } from "./resources/boardGroup";
 import { boardItemDescription } from "./resources/boardItem";
 import { boardSubitemDescription } from "./resources/boardSubitem";
 import { boardWebhookDescription } from "./resources/boardWebhook";
+import { docsDescription } from "./resources/docs";
 import { folderDescription } from "./resources/folder";
 
 import * as LoadOptions from "./LoadOptions";
@@ -25,6 +26,7 @@ const routers = {
 	boardItem: Ops.BoardItemOps,
 	boardSubitem: Ops.BoardSubitemOps,
 	boardWebhook: Ops.BoardWebhookOps,
+	docs: Ops.DocsOps,
 	folder: Ops.FolderOps,
 } as Record<string, Record<string, any>>;
 
@@ -111,6 +113,10 @@ export class MondayPro implements INodeType {
 						value: "boardWebhook",
 					},
 					{
+						name: 'Doc',
+						value: "docs",
+					},
+					{
 						name: "Folder",
 						value: "folder",
 					},
@@ -123,6 +129,7 @@ export class MondayPro implements INodeType {
 			...boardItemDescription,
 			...boardSubitemDescription,
 			...boardWebhookDescription,
+			...docsDescription,
 			...folderDescription,
 		],
 	};
