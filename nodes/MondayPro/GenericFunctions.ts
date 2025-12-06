@@ -3,8 +3,8 @@ import type {
 	IDataObject,
 	IExecuteFunctions,
 	IHookFunctions,
+	IHttpRequestOptions,
 	ILoadOptionsFunctions,
-	IRequestOptions,
 	IWebhookFunctions,
 	JsonObject,
 } from "n8n-workflow";
@@ -24,14 +24,14 @@ export async function mondayProApiRequest(
 		0,
 	) as string;
 
-	let options: IRequestOptions = {
+	let options: IHttpRequestOptions = {
 		headers: {
 			"API-Version": "2025-10",
 			"Content-Type": "application/json",
 		},
 		method: "POST",
 		body,
-		uri: "https://api.monday.com/v2/",
+		url: "https://api.monday.com/v2/",
 		json: true,
 	};
 
@@ -112,4 +112,67 @@ export async function mondayProApiPaginatedRequest(
 	}
 
 	return returnData;
+}
+
+export function buildItemFieldsGraphQL(
+	config: Record<string, any>,
+	indent = 4,
+): string {
+	const pad = " ".repeat(indent);
+	return Object.entries(config)
+		.map(([key, value]) => {
+			if (value === true) return `${pad}${key}`;
+			if (typeof value === "object") {
+				return `${pad}${key} {\n${
+					buildItemFieldsGraphQL(value, indent + 2)
+				}\n${pad}}`;
+			}
+			return "";
+		})
+		.join("\n");
+}
+
+export function jsonToGraphqlFields(
+	obj: IDataObject | null | undefined,
+): string {
+	const build = (o: IDataObject): string => {
+		if (!o) return "";
+
+		return Object.entries(o as Record<string, unknown>)
+			.map(([key, value]) => {
+				if (value === true) return key;
+
+				if (value && typeof value === "object" && !Array.isArray(value)) {
+					const args: string[] = [];
+					const subFields: string[] = [];
+
+					for (
+						const [k, v] of Object.entries(
+							value as Record<string, unknown>,
+						)
+					) {
+						if (k === "fields") {
+							subFields.push(...(v as string[]));
+							continue;
+						}
+						args.push(`${k}: ${JSON.stringify(v)}`);
+					}
+
+					const argString = args.length > 0 ? `(${args.join(", ")})` : "";
+					const subString = subFields.length > 0
+						? ` {\n${subFields.join("\n")}\n}`
+						: "";
+
+					return `${key}${argString}${subString}`;
+				}
+
+				return "";
+			})
+			.filter((line) => line !== "")
+			.join("\n");
+	};
+
+	if (!obj) return "{}";
+
+	return `{${build(obj)}\n}`;
 }
