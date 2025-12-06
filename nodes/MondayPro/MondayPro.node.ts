@@ -1232,6 +1232,12 @@ export class MondayPro implements INodeType {
 						) as string;
 						const returnAll = this.getNodeParameter("returnAll", i) as boolean;
 
+						const selectedFields = this.getNodeParameter(
+							"fields",
+							i,
+							[],
+						) as string[];
+
 						const workspace_ids = workspaceIdsRaw
 							?.split(",")
 							.map((id) => id.trim())
@@ -1246,10 +1252,28 @@ export class MondayPro implements INodeType {
 							? 100
 							: (this.getNodeParameter("limit", i) as number);
 
+						const fieldMap: Record<string, string> = {
+							id: "id",
+							name: "name",
+							color: "color",
+							created_at: "created_at",
+							owner_id: "owner_id",
+							children: "children { id name }",
+							parent: "parent { id name }",
+							sub_folders: "sub_folders { id name }",
+							workspace: "workspace { id name }",
+						};
+
+						const fieldsToUse =
+							(selectedFields.length ? selectedFields : ["id", "name", "color"])
+								.map((f) => fieldMap[f])
+								.filter(Boolean)
+								.join("\n");
+
 						const body: IGraphqlBody = {
 							query: `query (
 								$workspace_ids: [ID],
-								$ids: [ID],
+								$ids: [ID!],
 								$limit: Int
 							) {
 								folders(
@@ -1257,15 +1281,7 @@ export class MondayPro implements INodeType {
 									ids: $ids,
 									limit: $limit
 								) {
-									id
-									name
-									color
-									workspace {
-										id
-									}
-									parent {
-										id
-									}
+									${fieldsToUse}
 								}
 							}`,
 							variables: {
@@ -1347,7 +1363,9 @@ export class MondayPro implements INodeType {
 
 						const body: IGraphqlBody = {
 							query: `mutation ($folderId: ID!) {
-								delete_folder (id: $folderId) {
+								delete_folder (
+									folder_id: $folderId
+									) {
 									id
 								}
 							}`,

@@ -74,6 +74,57 @@ export const folderFields: INodeProperties[] = [
 			"Optional comma-separated list of specific folder IDs to return",
 	},
 	{
+		displayName: "Fields",
+		name: "fields",
+		type: "multiOptions",
+		displayOptions: {
+			show: {
+				resource: ["folder"],
+				operation: ["getAll"],
+			},
+		},
+		options: [
+			{
+				name: "ID",
+				value: "id",
+			},
+			{
+				name: "Name",
+				value: "name",
+			},
+			{
+				name: "Color",
+				value: "color",
+			},
+			{
+				name: "Created At",
+				value: "created_at",
+			},
+			{
+				name: "Owner ID",
+				value: "owner_id",
+			},
+			{
+				name: "Children (Boards)",
+				value: "children",
+			},
+			{
+				name: "Parent Folder",
+				value: "parent",
+			},
+			{
+				name: "Subfolders",
+				value: "sub_folders",
+			},
+			{
+				name: "Workspace",
+				value: "workspace",
+			},
+		],
+		default: ["id", "name", "color"],
+		description: "Select which fields to return for each folder",
+	},
+	{
 		displayName: "Return All",
 		name: "returnAll",
 		type: "boolean",
@@ -92,8 +143,9 @@ export const folderFields: INodeProperties[] = [
 		type: "number",
 		typeOptions: {
 			minValue: 1,
+			maxValue: 100,
 		},
-		default: 50,
+		default: 25,
 		displayOptions: {
 			show: {
 				resource: ["folder"],
@@ -150,10 +202,27 @@ export const folderFields: INodeProperties[] = [
 			{
 				displayName: "Color",
 				name: "color",
-				type: "color",
+				type: "options",
 				default: "",
 				description:
-					'Folder color (FolderColor enum value from monday.com, e.g. "purple")',
+					'Folder color (FolderColor enum value from monday.com, e.g. "PURPLE").',
+				options: [
+					{ name: "Done Green", value: "DONE_GREEN" },
+					{ name: "Bright Green", value: "BRIGHT_GREEN" },
+					{ name: "Working Orange", value: "WORKING_ORANGE" },
+					{ name: "Dark Orange", value: "DARK_ORANGE" },
+					{ name: "Sunset", value: "SUNSET" },
+					{ name: "Stuck Red", value: "STUCK_RED" },
+					{ name: "Dark Red", value: "DARK_RED" },
+					{ name: "Sofia Pink", value: "SOFIA_PINK" },
+					{ name: "Lipstick", value: "LIPSTICK" },
+					{ name: "Purple", value: "PURPLE" },
+					{ name: "Dark Purple", value: "DARK_PURPLE" },
+					{ name: "Indigo", value: "INDIGO" },
+					{ name: "Bright Blue", value: "BRIGHT_BLUE" },
+					{ name: "Aquamarine", value: "AQUAMARINE" },
+					{ name: "Chili Blue", value: "CHILI_BLUE" },
+				],
 			},
 			{
 				displayName: "Parent Folder ID",
@@ -205,10 +274,27 @@ export const folderFields: INodeProperties[] = [
 			{
 				displayName: "Color",
 				name: "color",
-				type: "string",
+				type: "options",
 				default: "",
 				description:
-					'Folder color (FolderColor enum value from monday.com, e.g. "purple")',
+					'Folder color (FolderColor enum value from monday.com, e.g. "PURPLE").',
+				options: [
+					{ name: "Done Green", value: "DONE_GREEN" },
+					{ name: "Bright Green", value: "BRIGHT_GREEN" },
+					{ name: "Working Orange", value: "WORKING_ORANGE" },
+					{ name: "Dark Orange", value: "DARK_ORANGE" },
+					{ name: "Sunset", value: "SUNSET" },
+					{ name: "Stuck Red", value: "STUCK_RED" },
+					{ name: "Dark Red", value: "DARK_RED" },
+					{ name: "Sofia Pink", value: "SOFIA_PINK" },
+					{ name: "Lipstick", value: "LIPSTICK" },
+					{ name: "Purple", value: "PURPLE" },
+					{ name: "Dark Purple", value: "DARK_PURPLE" },
+					{ name: "Indigo", value: "INDIGO" },
+					{ name: "Bright Blue", value: "BRIGHT_BLUE" },
+					{ name: "Aquamarine", value: "AQUAMARINE" },
+					{ name: "Chili Blue", value: "CHILI_BLUE" },
+				],
 			},
 			{
 				displayName: "Parent Folder ID",
