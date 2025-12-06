@@ -84,7 +84,7 @@ export const folderFields: INodeProperties[] = [
 				operation: ["getAll"],
 			},
 		},
-		description: 'Whether to return all results or only up to a given limit',
+		description: "Whether to return all results or only up to a given limit",
 	},
 	{
 		displayName: "Limit",
@@ -101,7 +101,7 @@ export const folderFields: INodeProperties[] = [
 				returnAll: [false],
 			},
 		},
-		description: 'Max number of results to return',
+		description: "Max number of results to return",
 	},
 	/* -------------------------------------------------------------------------- */
 	/*                                folder:create                         */
@@ -150,7 +150,7 @@ export const folderFields: INodeProperties[] = [
 			{
 				displayName: "Color",
 				name: "color",
-				type: 'color',
+				type: "color",
 				default: "",
 				description:
 					'Folder color (FolderColor enum value from monday.com, e.g. "purple")',
@@ -205,7 +205,7 @@ export const folderFields: INodeProperties[] = [
 			{
 				displayName: "Color",
 				name: "color",
-				type: 'color',
+				type: "string",
 				default: "",
 				description:
 					'Folder color (FolderColor enum value from monday.com, e.g. "purple")',

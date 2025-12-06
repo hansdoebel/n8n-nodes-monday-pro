@@ -34,7 +34,7 @@ export const boardItemOperations: INodeProperties[] = [
 				name: "Create",
 				value: "create",
 				description: "Create an item in a board's group",
-				action: 'Create an item in a board s group',
+				action: "Create an item in a board s group",
 			},
 			{
 				name: "Delete",
@@ -422,7 +422,8 @@ export const boardItemFields: INodeProperties[] = [
 		displayName: "Board Name or ID",
 		name: "boardId",
 		type: "options",
-		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+		description:
+			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 		default: "",
 		required: true,
 		typeOptions: {
@@ -497,7 +498,13 @@ export const boardItemFields: INodeProperties[] = [
 		    "fields": ["text"]
 		  }
 		}`,
-		description: 'Define GraphQL return fields via JSON',
+		description: "Define GraphQL return fields via JSON",
+		displayOptions: {
+			show: {
+				resource: ["boardItem"],
+				operation: ["getFiltered"],
+			},
+		},
 	},
 
 	/* -------------------------------------------------------------------------- */
