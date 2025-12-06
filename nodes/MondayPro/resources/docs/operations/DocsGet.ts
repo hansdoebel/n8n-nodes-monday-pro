@@ -21,11 +21,7 @@ export async function docsGetExecute(this: IExecuteFunctions, i: number) {
 		query: `query ($docId: ID!) {
 			docs(ids: [$docId]) {
 				id
-				title
-				content
-				created_at
-				creator_id
-				board { id name }
+				name
 			}
 		}`,
 		variables: { docId },

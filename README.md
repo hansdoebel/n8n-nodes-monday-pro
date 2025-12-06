@@ -66,6 +66,7 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 
 ## 📜 Version history
 
+- `0.0.7` - Added docs operations: get, create, delete
 - `0.0.6` - Complete refactor of descriptions, operations and execution logic
 - `0.0.5` - fixed folder operations (get, create, delete)
 - `0.0.4` - Added folder operations: get many, update, delete, create

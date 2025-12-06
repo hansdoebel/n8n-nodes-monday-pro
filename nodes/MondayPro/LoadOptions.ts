@@ -7,9 +7,6 @@ import {
 	mondayProApiRequestAllItems,
 } from "./GenericFunctions.js";
 
-/**
- * Fetches all boards in the account.
- */
 export async function getBoards(
 	this: ILoadOptionsFunctions,
 ): Promise<INodePropertyOptions[]> {
@@ -40,9 +37,6 @@ export async function getBoards(
 	return returnData;
 }
 
-/**
- * Fetches columns for a given board (id + title only, simple list)
- */
 export async function getColumns(
 	this: ILoadOptionsFunctions,
 ): Promise<INodePropertyOptions[]> {
@@ -73,9 +67,6 @@ export async function getColumns(
 	return returnData;
 }
 
-/**
- * Fetches all groups for a given board.
- */
 export async function getGroups(
 	this: ILoadOptionsFunctions,
 ): Promise<INodePropertyOptions[]> {

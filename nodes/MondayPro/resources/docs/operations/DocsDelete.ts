@@ -18,9 +18,7 @@ export async function docsDeleteExecute(this: IExecuteFunctions, i: number) {
 	const docId = this.getNodeParameter("docId", i);
 
 	const body: IGraphqlBody = {
-		query: `mutation ($docId: ID!) {
-			delete_doc (id: $docId) { id }
-		}`,
+		query: `mutation ($docId: ID!) { delete_doc (docId: $docId)	}`,
 		variables: { docId },
 	};
 
