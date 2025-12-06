@@ -1,7 +1,9 @@
 import type { IExecuteFunctions, INodeProperties } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
-import { mondayProApiRequest } from "../../../GenericFunctions";
-import { buildItemFieldsGraphQL } from "../../../GenericFunctions";
+import {
+	buildItemFieldsGraphQL,
+	mondayProApiRequest,
+} from "../../../GenericFunctions";
 
 export const boardItemCreate: INodeProperties[] = [
 	{
@@ -55,12 +57,71 @@ export const boardItemCreate: INodeProperties[] = [
 		},
 		options: [
 			{
-				displayName: "Column Values",
+				displayName: "Mode",
+				name: "mode",
+				type: "options",
+				default: "simple",
+				options: [
+					{
+						name: "Simple",
+						value: "simple",
+						description: "Select columns and values using UI fields",
+					},
+					{
+						name: "Advanced (JSON)",
+						value: "advanced",
+						description: "Manually specify JSON for full control",
+					},
+				],
+			},
+			{
+				displayName: "Column Values (Simple)",
+				name: "columnValuesUi",
+				type: "fixedCollection",
+				typeOptions: { multipleValues: true },
+				default: {},
+				displayOptions: {
+					show: {
+						mode: ["simple"],
+					},
+				},
+				placeholder: "Add Column Value",
+				description: "Set column values for the new item",
+				options: [
+					{
+						name: "columns",
+						displayName: "Column",
+						values: [
+							{
+								displayName: "Column",
+								name: "columnId",
+								type: "options",
+								typeOptions: {
+									loadOptionsMethod: "getColumns",
+									loadOptionsDependsOn: ["boardId"],
+								},
+								default: "",
+								description: "Select a column from the board",
+							},
+							{
+								displayName: "Value",
+								name: "value",
+								type: "string",
+								default: "",
+								description: "Value for this column",
+							},
+						],
+					},
+				],
+			},
+			{
+				displayName: "Column Values (JSON)",
 				name: "columnValues",
 				type: "json",
 				typeOptions: { alwaysOpenEditWindow: true },
 				default: "",
-				description: "Column values of the new item",
+				displayOptions: { show: { mode: ["advanced"] } },
+				description: "Manual JSON for column values",
 			},
 			{
 				displayName: "Return Fields (JSON)",
@@ -93,6 +154,24 @@ export async function boardItemCreateExecute(
 		i,
 		{},
 	) as any;
+	const mode = additionalFields.mode || "simple";
+
+	let columnValuesObj: Record<string, any> = {};
+
+	if (mode === "simple" && additionalFields.columnValuesUi) {
+		const columns = (additionalFields.columnValuesUi as any).columns as any[];
+		if (Array.isArray(columns)) {
+			for (const col of columns) {
+				if (col.columnId && col.value) {
+					columnValuesObj[col.columnId] = col.value;
+				}
+			}
+		}
+	}
+
+	if (mode === "advanced" && additionalFields.columnValues) {
+		columnValuesObj = JSON.parse(additionalFields.columnValues as string);
+	}
 
 	let fieldSelection = "id";
 
@@ -133,14 +212,13 @@ column_values(ids: ["${ids.join('","')}"]) {
 				}
 			}
 		`,
-		variables: { boardId, groupId, itemName },
+		variables: {
+			boardId,
+			groupId,
+			itemName,
+			columnValues: JSON.stringify(columnValuesObj),
+		},
 	};
-
-	if (additionalFields.columnValues) {
-		body.variables.columnValues = JSON.stringify(
-			JSON.parse(additionalFields.columnValues as string),
-		);
-	}
 
 	const response = await mondayProApiRequest.call(this, body);
 	return response.data.create_item;
