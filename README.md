@@ -1,10 +1,10 @@
 # n8n-nodes-monday-pro
 
+## ⚠️ THIS NODE IS IN VERY EARLY STAGE
+
 [n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
 
 This is a custom n8n community node providing an extended integration with Monday.com, including several additional features not covered by the official node.
-
-⚠️ This package is not affiliated with Monday.com.
 
 It is an independent enhancement created for advanced workflow use cases.
 
@@ -23,6 +23,7 @@ Create and manage:
 - **Board items** (+ with options to filter requested items and choose response data via JSON)
 - **Subitems** *(new – not included in the official node!)*
 - **Webhooks** *(new – not included in the official node!)*
+- **Folders** *(new – not included in the official node!)*
 - Update column values (single or multiple)
 - Query items by column value
 - Pagination support for large boards
@@ -65,6 +66,7 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 
 ## 📜 Version history
 
+- `0.0.6` - Complete refactor of descriptions, operations and execution logic
 - `0.0.5` - fixed folder operations (get, create, delete)
 - `0.0.4` - Added folder operations: get many, update, delete, create
 - `0.0.3` - Fix
