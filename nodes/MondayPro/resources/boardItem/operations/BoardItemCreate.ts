@@ -57,22 +57,13 @@ export const boardItemCreate: INodeProperties[] = [
 		},
 		options: [
 			{
-				displayName: "Mode",
-				name: "mode",
-				type: "options",
-				default: "simple",
-				options: [
-					{
-						name: "Simple",
-						value: "simple",
-						description: "Select columns and values using UI fields",
-					},
-					{
-						name: "Advanced (JSON)",
-						value: "advanced",
-						description: "Manually specify JSON for full control",
-					},
-				],
+				displayName: "Column Values (JSON)",
+				name: "columnValues",
+				type: "json",
+				typeOptions: { alwaysOpenEditWindow: true },
+				default: "",
+				displayOptions: { show: { mode: ["advanced"] } },
+				description: "Manual JSON for column values",
 			},
 			{
 				displayName: "Column Values (Simple)",
@@ -80,11 +71,7 @@ export const boardItemCreate: INodeProperties[] = [
 				type: "fixedCollection",
 				typeOptions: { multipleValues: true },
 				default: {},
-				displayOptions: {
-					show: {
-						mode: ["simple"],
-					},
-				},
+				displayOptions: { show: { mode: ["simple"] } },
 				placeholder: "Add Column Value",
 				description: "Set column values for the new item",
 				options: [
@@ -93,7 +80,7 @@ export const boardItemCreate: INodeProperties[] = [
 						displayName: "Column",
 						values: [
 							{
-								displayName: "Column",
+								displayName: "Column Name or ID",
 								name: "columnId",
 								type: "options",
 								typeOptions: {
@@ -101,7 +88,8 @@ export const boardItemCreate: INodeProperties[] = [
 									loadOptionsDependsOn: ["boardId"],
 								},
 								default: "",
-								description: "Select a column from the board",
+								description:
+									'Select a column from the board. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 							},
 							{
 								displayName: "Value",
@@ -115,13 +103,29 @@ export const boardItemCreate: INodeProperties[] = [
 				],
 			},
 			{
-				displayName: "Column Values (JSON)",
-				name: "columnValues",
-				type: "json",
-				typeOptions: { alwaysOpenEditWindow: true },
+				displayName: "Mode",
+				name: "mode",
+				type: "options",
+				default: "simple",
+				options: [
+					{
+						name: "Advanced (JSON)",
+						value: "advanced",
+						description: "Manually specify JSON for full control",
+					},
+					{
+						name: "Simple",
+						value: "simple",
+						description: "Select columns and values using UI fields",
+					},
+				],
+			},
+			{
+				displayName: "Return Column IDs",
+				name: "returnColumnIds",
+				type: "string",
 				default: "",
-				displayOptions: { show: { mode: ["advanced"] } },
-				description: "Manual JSON for column values",
+				description: "Comma-separated list of column IDs to include in return",
 			},
 			{
 				displayName: "Return Fields (JSON)",
@@ -130,13 +134,6 @@ export const boardItemCreate: INodeProperties[] = [
 				typeOptions: { alwaysOpenEditWindow: true },
 				default: "",
 				description: "Standard fields to include in the response",
-			},
-			{
-				displayName: "Return Column IDs",
-				name: "returnColumnIds",
-				type: "string",
-				default: "",
-				description: "Comma-separated list of column IDs to include in return",
 			},
 		],
 	},
