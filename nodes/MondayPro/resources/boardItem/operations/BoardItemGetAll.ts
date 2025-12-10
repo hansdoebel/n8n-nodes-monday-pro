@@ -1,5 +1,5 @@
 import type { IExecuteFunctions, INodeProperties } from "n8n-workflow";
-import type { IGraphqlBody } from "../../../types";
+import type { IGraphqlBody } from "@types";
 import {
 	mondayProApiPaginatedRequest,
 	mondayProApiRequest,

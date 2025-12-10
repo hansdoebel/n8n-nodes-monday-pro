@@ -4,7 +4,7 @@ import {
 	NodeOperationError,
 } from "n8n-workflow";
 import type { IDataObject } from "n8n-workflow";
-import type { IGraphqlBody } from "../../../types";
+import type { IGraphqlBody } from "@types";
 import {
 	jsonToGraphqlFields,
 	mondayProApiPaginatedRequest,

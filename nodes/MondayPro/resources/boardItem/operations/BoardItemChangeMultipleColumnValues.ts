@@ -1,6 +1,6 @@
 import type { IExecuteFunctions, INodeProperties } from "n8n-workflow";
 import { NodeOperationError } from "n8n-workflow";
-import type { IGraphqlBody } from "../../../types";
+import type { IGraphqlBody } from "@types";
 import { mondayProApiRequest } from "@utils/GenericFunctions";
 
 export const boardItemChangeMultipleColumnValues: INodeProperties[] = [

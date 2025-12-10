@@ -23,6 +23,7 @@
 		"baseUrl": ".",
 		"paths": {
 			"@utils/*": ["nodes/MondayPro/utils/*"],
+			"@types": ["nodes/MondayPro/types"],
 			"@types/*": ["nodes/MondayPro/types/*"],
 			"@resources/*": ["nodes/MondayPro/resources/*"]
 		}

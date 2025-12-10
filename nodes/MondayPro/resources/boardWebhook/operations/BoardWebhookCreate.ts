@@ -3,7 +3,7 @@ import {
 	INodeProperties,
 	NodeOperationError,
 } from "n8n-workflow";
-import type { IGraphqlBody } from "../../../types";
+import type { IGraphqlBody } from "@types";
 import { mondayProApiRequest } from "@utils/GenericFunctions";
 
 export const boardWebhookCreate: INodeProperties[] = [
