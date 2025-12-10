@@ -43,6 +43,96 @@ export const boardCreate: INodeProperties[] = [
 				default: 0,
 				description: "Optional board template ID",
 			},
+			{
+				displayName: "Board Kind",
+				name: "boardKind",
+				type: "options",
+				default: "private",
+				description: "The type of board to create",
+				options: [
+					{ name: "Private", value: "private" },
+					{ name: "Public", value: "public" },
+					{ name: "Share", value: "share" },
+				],
+			},
+			{
+				displayName: "Board Owner IDs",
+				name: "boardOwnerIds",
+				type: "string",
+				description:
+					"A list of IDs of users who will be board owners (comma-separated)",
+			},
+			{
+				displayName: "Board Owner Team IDs",
+				name: "boardOwnerTeamIds",
+				type: "string",
+				description:
+					"A list of IDs of teams that will be board owners (comma-separated)",
+			},
+			{
+				displayName: "Board Subscriber IDs",
+				name: "boardSubscriberIds",
+				type: "string",
+				description:
+					"A list of IDs of users who will subscribe to the board (comma-separated)",
+			},
+			{
+				displayName: "Board Subscriber Team IDs",
+				name: "boardSubscriberTeamIds",
+				type: "string",
+				description:
+					"A list of IDs of teams that will subscribe to the board (comma-separated)",
+			},
+			{
+				displayName: "Description",
+				name: "description",
+				type: "string",
+				description: "The new board's description",
+			},
+			{
+				displayName: "Empty Board",
+				name: "empty",
+				type: "boolean",
+				description: "Creates an empty board without any default items",
+			},
+			{
+				displayName: "Folder ID",
+				name: "folderId",
+				type: "number",
+				description: "The board's folder ID",
+			},
+			{
+				displayName: "Item Nickname",
+				name: "itemNickname",
+				type: "collection",
+				description: "The nickname configuration for items on the board",
+				options: [
+					{
+						displayName: "Plural",
+						name: "plural",
+						type: "string",
+						description: "Plural form of the item nickname",
+					},
+					{
+						displayName: "Singular",
+						name: "singular",
+						type: "string",
+						description: "Singular form of the item nickname",
+					},
+					{
+						displayName: "Preset Type",
+						name: "presetType",
+						type: "string",
+						description: "Preset type for the item nickname",
+					},
+				],
+			},
+			{
+				displayName: "Workspace ID",
+				name: "workspaceId",
+				type: "number",
+				description: "The board's workspace ID",
+			},
 		],
 	},
 ];
@@ -52,6 +142,20 @@ export async function boardCreateExecute(this: IExecuteFunctions, i: number) {
 	const kind = this.getNodeParameter("kind", i) as string;
 	const additionalFields = this.getNodeParameter("additionalFields", i, {}) as {
 		templateId?: number;
+		boardKind?: "private" | "public" | "share";
+		boardOwnerIds?: string;
+		boardOwnerTeamIds?: string;
+		boardSubscriberIds?: string;
+		boardSubscriberTeamIds?: string;
+		description?: string;
+		empty?: boolean;
+		folderId?: number;
+		itemNickname?: {
+			plural?: string;
+			singular?: string;
+			presetType?: string;
+		};
+		workspaceId?: number;
 	};
 	const body: IGraphqlBody = {
 		query: `mutation ($name: String!, $kind: BoardKind!, $templateId: ID) {
@@ -64,6 +168,48 @@ export async function boardCreateExecute(this: IExecuteFunctions, i: number) {
 			kind,
 			...(additionalFields.templateId &&
 				{ templateId: additionalFields.templateId }),
+			...(additionalFields.boardKind &&
+				{ boardKind: additionalFields.boardKind }),
+			...(additionalFields.boardOwnerIds &&
+				{
+					boardOwnerIds: additionalFields.boardOwnerIds.split(",").map((id) =>
+						id.trim()
+					),
+				}),
+			...(additionalFields.boardOwnerTeamIds &&
+				{
+					boardOwnerTeamIds: additionalFields.boardOwnerTeamIds.split(",").map(
+						(id) => id.trim()
+					),
+				}),
+			...(additionalFields.boardSubscriberIds &&
+				{
+					boardSubscriberIds: additionalFields.boardSubscriberIds.split(",")
+						.map((id) => id.trim()),
+				}),
+			...(additionalFields.boardSubscriberTeamIds &&
+				{
+					boardSubscriberTeamIds: additionalFields.boardSubscriberTeamIds.split(
+						",",
+					).map((id) => id.trim()),
+				}),
+			...(additionalFields.description &&
+				{ description: additionalFields.description }),
+			...(additionalFields.empty !== undefined &&
+				{ empty: additionalFields.empty }),
+			...(additionalFields.folderId && { folderId: additionalFields.folderId }),
+			...(additionalFields.itemNickname && {
+				itemNickname: {
+					...(additionalFields.itemNickname.plural &&
+						{ plural: additionalFields.itemNickname.plural }),
+					...(additionalFields.itemNickname.singular &&
+						{ singular: additionalFields.itemNickname.singular }),
+					...(additionalFields.itemNickname.presetType &&
+						{ preset_type: additionalFields.itemNickname.presetType }),
+				},
+			}),
+			...(additionalFields.workspaceId &&
+				{ workspaceId: additionalFields.workspaceId }),
 		},
 	};
 	const response = await mondayProApiRequest.call(this, body);
