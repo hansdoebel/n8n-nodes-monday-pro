@@ -53,11 +53,7 @@ export async function boardUpdateExecute(this: IExecuteFunctions, i: number) {
 
 	const query =
 		`mutation ($boardId: ID!, $boardAttribute: BoardAttributes!, $newValue: String!) {
-		update_board(board_id: $boardId, board_attribute: $boardAttribute, new_value: $newValue) {
-			id
-			name
-			description
-		}
+		update_board(board_id: $boardId, board_attribute: $boardAttribute, new_value: $newValue)
 	}`;
 
 	const body: IGraphqlBody = {
@@ -94,5 +90,33 @@ export async function boardUpdateExecute(this: IExecuteFunctions, i: number) {
 		);
 	}
 
-	return response.data.update_board;
+	let parsedResponse = response.data.update_board;
+
+	if (typeof parsedResponse === "string") {
+		try {
+			parsedResponse = JSON.parse(parsedResponse);
+		} catch (e) {
+			throw new Error(
+				`Failed to parse update_board response: ${parsedResponse}. Error: ${
+					(e as Error).message
+				}`,
+			);
+		}
+	}
+
+	if (!parsedResponse.success) {
+		throw new Error(
+			`Board update failed: success is false. Response: ${
+				JSON.stringify(parsedResponse)
+			}`,
+		);
+	}
+
+	return {
+		success: parsedResponse.success,
+		boardId,
+		boardAttribute,
+		newValue,
+		undoData: parsedResponse.undo_data,
+	};
 }

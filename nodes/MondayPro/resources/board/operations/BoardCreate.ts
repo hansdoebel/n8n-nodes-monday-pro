@@ -14,6 +14,19 @@ export const boardCreate: INodeProperties[] = [
 		description: "The board's name",
 	},
 	{
+		displayName: "Kind",
+		name: "boardKind",
+		type: "options",
+		default: "private",
+		required: true,
+		description: "The type of board to create",
+		options: [
+			{ name: "Private", value: "private" },
+			{ name: "Public", value: "public" },
+			{ name: "Share", value: "share" },
+		],
+	},
+	{
 		displayName: "Additional Fields",
 		name: "additionalFields",
 		type: "collection",
@@ -71,18 +84,6 @@ export const boardCreate: INodeProperties[] = [
 						default: "",
 						description: "Singular form of the item nickname",
 					},
-				],
-			},
-			{
-				displayName: "Kind",
-				name: "boardKind",
-				type: "options",
-				default: "private",
-				description: "The type of board to create",
-				options: [
-					{ name: "Private", value: "private" },
-					{ name: "Public", value: "public" },
-					{ name: "Share", value: "share" },
 				],
 			},
 			{
