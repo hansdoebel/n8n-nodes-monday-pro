@@ -211,7 +211,7 @@ export async function boardCreateExecute(this: IExecuteFunctions, i: number) {
 	}
 
 	if (additionalFields.folderId) {
-		variables.folderId = additionalFields.folderId;
+		variables.folderId = String(additionalFields.folderId);
 		queryParams.push("$folderId: ID");
 		mutationArgs.push("folder_id: $folderId");
 	}
@@ -238,13 +238,13 @@ export async function boardCreateExecute(this: IExecuteFunctions, i: number) {
 	}
 
 	if (additionalFields.templateId) {
-		variables.templateId = additionalFields.templateId;
+		variables.templateId = String(additionalFields.templateId);
 		queryParams.push("$templateId: ID");
 		mutationArgs.push("template_id: $templateId");
 	}
 
 	if (additionalFields.workspaceId) {
-		variables.workspaceId = additionalFields.workspaceId;
+		variables.workspaceId = String(additionalFields.workspaceId);
 		queryParams.push("$workspaceId: ID");
 		mutationArgs.push("workspace_id: $workspaceId");
 	}
@@ -261,5 +261,29 @@ export async function boardCreateExecute(this: IExecuteFunctions, i: number) {
 	};
 
 	const response = await mondayProApiRequest.call(this, body);
+
+	if (!response) {
+		throw new Error("No response from API");
+	}
+
+	if (response.errors) {
+		const errorMessage = response.errors
+			.map((err: any) => err.message)
+			.join(", ");
+		throw new Error(`GraphQL Error: ${errorMessage}`);
+	}
+
+	if (!response.data) {
+		throw new Error(
+			`Invalid API response structure: ${JSON.stringify(response)}`,
+		);
+	}
+
+	if (!response.data.create_board) {
+		throw new Error(
+			`Board creation failed: ${JSON.stringify(response.data)}`,
+		);
+	}
+
 	return response.data.create_board;
 }
