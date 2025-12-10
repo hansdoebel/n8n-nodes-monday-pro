@@ -26,6 +26,12 @@ export const boardOperations: INodeProperties[] = [
 				action: "Create a board",
 			},
 			{
+				name: "Duplicate",
+				value: "duplicate",
+				description: "Duplicate a board",
+				action: "Duplicate a board",
+			},
+			{
 				name: "Get",
 				value: "get",
 				description: "Get a board",
