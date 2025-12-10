@@ -5,8 +5,10 @@ import type {
 	INodeProperties,
 } from "n8n-workflow";
 
+import { API_CONFIG, CREDENTIAL_TYPES } from "@types";
+
 export class MondayProApi implements ICredentialType {
-	name = "mondayProApi";
+	name = CREDENTIAL_TYPES.ACCESS_TOKEN;
 
 	displayName = "Monday.com (Pro) API";
 
@@ -35,11 +37,11 @@ export class MondayProApi implements ICredentialType {
 	test: ICredentialTestRequest = {
 		request: {
 			headers: {
-				"API-Version": "2025-10",
-				"Content-Type": "application/json",
+				"API-Version": API_CONFIG.VERSION,
+				"Content-Type": API_CONFIG.CONTENT_TYPE,
 			},
-			baseURL: "https://api.monday.com/v2",
-			method: "POST",
+			baseURL: API_CONFIG.BASE_URL,
+			method: API_CONFIG.METHOD,
 			body: JSON.stringify({
 				query: "query { me { name }}",
 			}),

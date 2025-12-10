@@ -1,9 +1,10 @@
 import type { ICredentialType, INodeProperties } from "n8n-workflow";
+import { CREDENTIAL_TYPES } from "@types";
 
 const scopes = ["boards:write", "boards:read"];
 
 export class MondayProOAuth2Api implements ICredentialType {
-	name = "mondayProOAuth2Api";
+	name = CREDENTIAL_TYPES.OAUTH2;
 
 	extends = ["oAuth2Api"];
 

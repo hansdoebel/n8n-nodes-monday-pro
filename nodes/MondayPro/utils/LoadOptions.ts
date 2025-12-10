@@ -1,6 +1,7 @@
 import type { ILoadOptionsFunctions, INodePropertyOptions } from "n8n-workflow";
 
 import type { IGraphqlBody } from "@types";
+import { GRAPHQL_QUERY_NAMES, NODE_PARAMETER_NAMES } from "@types";
 
 import {
 	mondayProApiRequest,
@@ -13,7 +14,7 @@ export async function getBoards(
 	const returnData: INodePropertyOptions[] = [];
 	const body: IGraphqlBody = {
 		query: `query ($page: Int, $limit: Int) {
-			boards (page: $page, limit: $limit){
+			${GRAPHQL_QUERY_NAMES.BOARDS} (page: $page, limit: $limit){
 				id
 				description
 				name
@@ -41,11 +42,13 @@ export async function getColumns(
 	this: ILoadOptionsFunctions,
 ): Promise<INodePropertyOptions[]> {
 	const returnData: INodePropertyOptions[] = [];
-	const boardId = this.getCurrentNodeParameter("boardId") as string;
+	const boardId = this.getCurrentNodeParameter(
+		NODE_PARAMETER_NAMES.BOARD_ID,
+	) as string;
 
 	const body: IGraphqlBody = {
 		query: `query ($boardId: [ID!]) {
-			boards (ids: $boardId){
+			${GRAPHQL_QUERY_NAMES.BOARDS} (ids: $boardId){
 				columns {
 					id
 					title
@@ -71,10 +74,12 @@ export async function getGroups(
 	this: ILoadOptionsFunctions,
 ): Promise<INodePropertyOptions[]> {
 	const returnData: INodePropertyOptions[] = [];
-	const boardId = this.getCurrentNodeParameter("boardId") as string;
+	const boardId = this.getCurrentNodeParameter(
+		NODE_PARAMETER_NAMES.BOARD_ID,
+	) as string;
 	const body: IGraphqlBody = {
 		query: `query ($boardId: ID!) {
-			boards (ids: [$boardId]) {
+			${GRAPHQL_QUERY_NAMES.BOARDS} (ids: [$boardId]) {
 				groups {
 					id
 					title

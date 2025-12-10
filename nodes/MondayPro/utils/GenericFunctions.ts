@@ -9,6 +9,14 @@ import type {
 	JsonObject,
 } from "n8n-workflow";
 import { NodeApiError } from "n8n-workflow";
+import {
+	API_CONFIG,
+	API_HEADERS,
+	AuthenticationMethod,
+	CREDENTIAL_TYPES,
+	NODE_PARAMETER_NAMES,
+	PAGINATION_CONFIG,
+} from "@types";
 
 export async function mondayProApiRequest(
 	this:
@@ -20,33 +28,29 @@ export async function mondayProApiRequest(
 	option: IDataObject = {},
 ): Promise<any> {
 	const authenticationMethod = this.getNodeParameter(
-		"authentication",
+		NODE_PARAMETER_NAMES.AUTHENTICATION,
 		0,
-	) as string;
+	) as AuthenticationMethod;
 
-	let options: IHttpRequestOptions = {
-		headers: {
-			"API-Version": "2025-10",
-			"Content-Type": "application/json",
-		},
-		method: "POST",
+	const options: IHttpRequestOptions = {
+		headers: API_HEADERS,
+		method: API_CONFIG.METHOD,
 		body,
-		url: "https://api.monday.com/v2/",
+		url: API_CONFIG.BASE_URL,
 		json: true,
 	};
 
-	options = Object.assign({}, options, option);
+	const mergedOptions = Object.assign({}, options, option);
 
 	try {
-		let credentialType = "mondayProApi";
+		const credentialType = authenticationMethod === AuthenticationMethod.OAUTH2
+			? CREDENTIAL_TYPES.OAUTH2
+			: CREDENTIAL_TYPES.ACCESS_TOKEN;
 
-		if (authenticationMethod === "oAuth2") {
-			credentialType = "mondayProOAuth2Api";
-		}
 		return await this.helpers.requestWithAuthentication.call(
 			this,
 			credentialType,
-			options,
+			mergedOptions,
 		);
 	} catch (error) {
 		throw new NodeApiError(this.getNode(), error as JsonObject);
@@ -61,8 +65,8 @@ export async function mondayProApiRequestAllItems(
 	const returnData: IDataObject[] = [];
 
 	let responseData;
-	body.variables.limit = 50;
-	body.variables.page = 1;
+	body.variables.limit = PAGINATION_CONFIG.DEFAULT_LIMIT;
+	body.variables.page = PAGINATION_CONFIG.INITIAL_PAGE;
 
 	do {
 		responseData = await mondayProApiRequest.call(this, body);
@@ -95,7 +99,7 @@ export async function mondayProApiPaginatedRequest(
 			const responseData = (
 				(await mondayProApiRequest.call(this, {
 					query:
-						`query ( $cursor: String!) { next_items_page (cursor: $cursor, limit: 100) { cursor items ${fieldsToReturn} } }`,
+						`query ( $cursor: String!) { next_items_page (cursor: $cursor, limit: ${PAGINATION_CONFIG.MAX_LIMIT}) { cursor items ${fieldsToReturn} } }`,
 					variables: {
 						cursor,
 					},
