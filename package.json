@@ -4,26 +4,55 @@
 	"description": "Extended Monday.com module for custom n8n node.",
 	"keywords": [
 		"n8n-community-node-package",
+		"n8n",
 		"monday",
 		"monday.com",
-		"n8n"
+		"monday-api",
+		"monday-integration",
+		"monday-automation",
+		"graphql",
+		"boards",
+		"docs",
+		"subitems",
+		"webhooks",
+		"crm",
+		"workflow-automation",
+		"project-management",
+		"no-code",
+		"low-code",
+		"integration",
+		"api",
+		"automation"
 	],
 	"license": "MIT",
-	"homepage": "https://n8n.io",
 	"author": {
 		"name": "Hans Doebel",
 		"email": "dev@hansdoebel.de"
 	},
+	"homepage": "https://github.com/hansdoebel/n8n-nodes-monday-pro#readme",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/hansdoebel/n8n-nodes-monday-pro.git"
+		"url": "https://github.com/hansdoebel/n8n-nodes-monday-pro.git"
 	},
+	"bugs": {
+		"url": "https://github.com/hansdoebel/n8n-nodes-monday-pro/issues"
+	},
+	"funding": {
+		"type": "buymeacoffee",
+		"url": "https://buymeacoffee.com/hansdoebel"
+	},
+	"main": "index.js",
+	"files": [
+		"dist"
+	],
 	"engines": {
 		"node": ">=18.10",
 		"pnpm": ">=9.1"
 	},
 	"packageManager": "pnpm@9.1.4",
-	"main": "index.js",
+	"publishConfig": {
+		"access": "public"
+	},
 	"scripts": {
 		"preinstall": "npx only-allow pnpm",
 		"build": "tsc && gulp build:icons",
@@ -33,9 +62,6 @@
 		"lintfix": "eslint nodes credentials package.json --fix",
 		"prepublishOnly": "pnpm build && pnpm lint -c .eslintrc.prepublish.js nodes credentials package.json"
 	},
-	"files": [
-		"dist"
-	],
 	"n8n": {
 		"n8nNodesApiVersion": 1,
 		"credentials": [
@@ -46,6 +72,13 @@
 			"dist/nodes/MondayPro/MondayPro.node.js"
 		]
 	},
+	"dependencies": {
+		"change-case": "^5.4.4",
+		"lodash": "^4.17.21"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	},
 	"devDependencies": {
 		"@types/lodash": "^4.17.21",
 		"@typescript-eslint/parser": "^7.18.0",
@@ -54,12 +87,5 @@
 		"gulp": "^4.0.2",
 		"prettier": "^3.7.4",
 		"typescript": "^5.9.3"
-	},
-	"peerDependencies": {
-		"n8n-workflow": "*"
-	},
-	"dependencies": {
-		"change-case": "^5.4.4",
-		"lodash": "^4.17.21"
 	}
 }

@@ -28,14 +28,14 @@ export const setBoardPermission: INodeProperties[] = [
 		},
 		description: "The role's name",
 		options: [
-			{ name: 'Contributor (Can Edit Content)', value: "contributor" },
-			{ name: 'Editor (Can Edit Content and Structure)', value: "editor" },
-			{ name: 'Viewer (Read-Only)', value: "viewer" },
+			{ name: "Contributor (Can Edit Content)", value: "contributor" },
+			{ name: "Editor (Can Edit Content and Structure)", value: "editor" },
+			{ name: "Viewer (Read-Only)", value: "viewer" },
 		],
 	},
 ];
 
-export async function setBoardPermissionExecute(
+export async function boardSetPermissionExecute(
 	this: IExecuteFunctions,
 	i: number,
 ) {
