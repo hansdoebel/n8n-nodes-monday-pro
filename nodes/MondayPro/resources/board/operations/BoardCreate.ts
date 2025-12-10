@@ -14,20 +14,6 @@ export const boardCreate: INodeProperties[] = [
 		description: "The board's name",
 	},
 	{
-		displayName: "Kind",
-		name: "kind",
-		type: "options",
-		default: "private",
-		required: true,
-		description: "The board's kind (public / private / share)",
-		displayOptions: { show: { resource: ["board"], operation: ["create"] } },
-		options: [
-			{ name: "Share", value: "share" },
-			{ name: "Public", value: "public" },
-			{ name: "Private", value: "private" },
-		],
-	},
-	{
 		displayName: "Additional Fields",
 		name: "additionalFields",
 		type: "collection",
@@ -36,77 +22,26 @@ export const boardCreate: INodeProperties[] = [
 		displayOptions: { show: { resource: ["board"], operation: ["create"] } },
 		options: [
 			{
-				displayName: "Template ID",
-				name: "templateId",
-				type: "number",
-				typeOptions: { minValue: 0 },
-				default: 0,
-				description: "Optional board template ID",
-			},
-			{
-				displayName: "Board Kind",
-				name: "boardKind",
-				type: "options",
-				default: "private",
-				description: "The type of board to create",
-				options: [
-					{ name: "Private", value: "private" },
-					{ name: "Public", value: "public" },
-					{ name: "Share", value: "share" },
-				],
-			},
-			{
-				displayName: "Board Owner IDs",
-				name: "boardOwnerIds",
-				type: "string",
-				description:
-					"A list of IDs of users who will be board owners (comma-separated)",
-				default: "",
-			},
-			{
-				displayName: "Board Owner Team IDs",
-				name: "boardOwnerTeamIds",
-				type: "string",
-				description:
-					"A list of IDs of teams that will be board owners (comma-separated)",
-				default: "",
-			},
-			{
-				displayName: "Board Subscriber IDs",
-				name: "boardSubscriberIds",
-				type: "string",
-				description:
-					"A list of IDs of users who will subscribe to the board (comma-separated)",
-				default: "",
-			},
-			{
-				displayName: "Board Subscriber Team IDs",
-				name: "boardSubscriberTeamIds",
-				type: "string",
-				description:
-					"A list of IDs of teams that will subscribe to the board (comma-separated)",
-				default: "",
-			},
-			{
 				displayName: "Description",
 				name: "description",
 				type: "string",
-				description: "The new board's description",
 				default: "",
+				description: "The new board's description",
 			},
 			{
 				displayName: "Empty Board",
 				name: "empty",
 				type: "boolean",
-				description: "Creates an empty board without any default items",
 				default: false,
+				description:
+					"Whether to create an empty board without any default items",
 			},
 			{
 				displayName: "Folder ID",
 				name: "folderId",
 				type: "number",
-				description: "The board's folder ID",
 				default: 0,
+				description: "The board's folder ID",
 			},
 			{
 				displayName: "Item Nickname",
@@ -123,33 +58,79 @@ export const boardCreate: INodeProperties[] = [
 						description: "Plural form of the item nickname",
 					},
 					{
-						displayName: "Singular",
-						name: "singular",
-						type: "string",
-						default: "",
-						description: "Singular form of the item nickname",
-					},
-					{
 						displayName: "Preset Type",
 						name: "presetType",
 						type: "string",
 						default: "",
 						description: "Preset type for the item nickname",
 					},
-				],
-				displayOptions: {
-					show: {
-						resource: ["board"],
-						operation: ["create"],
+					{
+						displayName: "Singular",
+						name: "singular",
+						type: "string",
+						default: "",
+						description: "Singular form of the item nickname",
 					},
-				},
+				],
+			},
+			{
+				displayName: "Kind",
+				name: "boardKind",
+				type: "options",
+				default: "private",
+				description: "The type of board to create",
+				options: [
+					{ name: "Private", value: "private" },
+					{ name: "Public", value: "public" },
+					{ name: "Share", value: "share" },
+				],
+			},
+			{
+				displayName: "Owner IDs",
+				name: "boardOwnerIds",
+				type: "string",
+				default: "",
+				description:
+					"A list of IDs of users who will be board owners (comma-separated)",
+			},
+			{
+				displayName: "Owner Team IDs",
+				name: "boardOwnerTeamIds",
+				type: "string",
+				default: "",
+				description:
+					"A list of IDs of teams that will be board owners (comma-separated)",
+			},
+			{
+				displayName: "Subscriber IDs",
+				name: "boardSubscriberIds",
+				type: "string",
+				default: "",
+				description:
+					"A list of IDs of users who will subscribe to the board (comma-separated)",
+			},
+			{
+				displayName: "Subscriber Team IDs",
+				name: "boardSubscriberTeamIds",
+				type: "string",
+				default: "",
+				description:
+					"A list of IDs of teams that will subscribe to the board (comma-separated)",
+			},
+			{
+				displayName: "Template ID",
+				name: "templateId",
+				type: "number",
+				typeOptions: { minValue: 0 },
+				default: 0,
+				description: "Optional board template ID",
 			},
 			{
 				displayName: "Workspace ID",
 				name: "workspaceId",
 				type: "number",
-				description: "The board's workspace ID",
 				default: 0,
+				description: "The board's workspace ID",
 			},
 		],
 	},
@@ -157,7 +138,6 @@ export const boardCreate: INodeProperties[] = [
 
 export async function boardCreateExecute(this: IExecuteFunctions, i: number) {
 	const name = this.getNodeParameter("name", i) as string;
-	const kind = this.getNodeParameter("kind", i) as string;
 	const additionalFields = this.getNodeParameter("additionalFields", i, {}) as {
 		templateId?: number;
 		boardKind?: "private" | "public" | "share";
@@ -175,61 +155,111 @@ export async function boardCreateExecute(this: IExecuteFunctions, i: number) {
 		};
 		workspaceId?: number;
 	};
+
+	const variables: Record<string, any> = { name };
+	const queryParams: string[] = ["$name: String!"];
+	const mutationArgs: string[] = ["board_name: $name"];
+
+	if (additionalFields.boardKind) {
+		variables.boardKind = additionalFields.boardKind;
+		queryParams.push("$boardKind: BoardKind!");
+		mutationArgs.push("board_kind: $boardKind");
+	}
+
+	if (additionalFields.boardOwnerIds) {
+		variables.boardOwnerIds = additionalFields.boardOwnerIds
+			.split(",")
+			.map((id) => id.trim());
+		queryParams.push("$boardOwnerIds: [ID!]");
+		mutationArgs.push("board_owner_ids: $boardOwnerIds");
+	}
+
+	if (additionalFields.boardOwnerTeamIds) {
+		variables.boardOwnerTeamIds = additionalFields.boardOwnerTeamIds
+			.split(",")
+			.map((id) => id.trim());
+		queryParams.push("$boardOwnerTeamIds: [ID!]");
+		mutationArgs.push("board_owner_team_ids: $boardOwnerTeamIds");
+	}
+
+	if (additionalFields.boardSubscriberIds) {
+		variables.boardSubscriberIds = additionalFields.boardSubscriberIds
+			.split(",")
+			.map((id) => id.trim());
+		queryParams.push("$boardSubscriberIds: [ID!]");
+		mutationArgs.push("board_subscriber_ids: $boardSubscriberIds");
+	}
+
+	if (additionalFields.boardSubscriberTeamIds) {
+		variables.boardSubscriberTeamIds = additionalFields.boardSubscriberTeamIds
+			.split(",")
+			.map((id) => id.trim());
+		queryParams.push("$boardSubscriberTeamIds: [ID!]");
+		mutationArgs.push("board_subscriber_teams_ids: $boardSubscriberTeamIds");
+	}
+
+	if (additionalFields.description) {
+		variables.description = additionalFields.description;
+		queryParams.push("$description: String");
+		mutationArgs.push("description: $description");
+	}
+
+	if (additionalFields.empty !== undefined) {
+		variables.empty = additionalFields.empty;
+		queryParams.push("$empty: Boolean");
+		mutationArgs.push("empty: $empty");
+	}
+
+	if (additionalFields.folderId) {
+		variables.folderId = additionalFields.folderId;
+		queryParams.push("$folderId: ID");
+		mutationArgs.push("folder_id: $folderId");
+	}
+
+	if (
+		additionalFields.itemNickname &&
+		Object.keys(additionalFields.itemNickname).length > 0
+	) {
+		const itemNickname: Record<string, any> = {};
+		if (additionalFields.itemNickname.plural) {
+			itemNickname.plural = additionalFields.itemNickname.plural;
+		}
+		if (additionalFields.itemNickname.singular) {
+			itemNickname.singular = additionalFields.itemNickname.singular;
+		}
+		if (additionalFields.itemNickname.presetType) {
+			itemNickname.preset_type = additionalFields.itemNickname.presetType;
+		}
+		if (Object.keys(itemNickname).length > 0) {
+			variables.itemNickname = itemNickname;
+			queryParams.push("$itemNickname: ItemNicknameInput");
+			mutationArgs.push("item_nickname: $itemNickname");
+		}
+	}
+
+	if (additionalFields.templateId) {
+		variables.templateId = additionalFields.templateId;
+		queryParams.push("$templateId: ID");
+		mutationArgs.push("template_id: $templateId");
+	}
+
+	if (additionalFields.workspaceId) {
+		variables.workspaceId = additionalFields.workspaceId;
+		queryParams.push("$workspaceId: ID");
+		mutationArgs.push("workspace_id: $workspaceId");
+	}
+
+	const query = `mutation (${queryParams.join(", ")}) {
+		create_board(${mutationArgs.join(", ")}) {
+			id
+		}
+	}`;
+
 	const body: IGraphqlBody = {
-		query: `mutation ($name: String!, $kind: BoardKind!, $templateId: ID) {
-				create_board (board_name: $name, board_kind: $kind, template_id: $templateId) {
-					id
-				}
-			}`,
-		variables: {
-			name,
-			kind,
-			...(additionalFields.templateId &&
-				{ templateId: additionalFields.templateId }),
-			...(additionalFields.boardKind &&
-				{ boardKind: additionalFields.boardKind }),
-			...(additionalFields.boardOwnerIds &&
-				{
-					boardOwnerIds: additionalFields.boardOwnerIds.split(",").map((id) =>
-						id.trim()
-					),
-				}),
-			...(additionalFields.boardOwnerTeamIds &&
-				{
-					boardOwnerTeamIds: additionalFields.boardOwnerTeamIds.split(",").map(
-						(id) => id.trim(),
-					),
-				}),
-			...(additionalFields.boardSubscriberIds &&
-				{
-					boardSubscriberIds: additionalFields.boardSubscriberIds.split(",")
-						.map((id) => id.trim()),
-				}),
-			...(additionalFields.boardSubscriberTeamIds &&
-				{
-					boardSubscriberTeamIds: additionalFields.boardSubscriberTeamIds.split(
-						",",
-					).map((id) => id.trim()),
-				}),
-			...(additionalFields.description &&
-				{ description: additionalFields.description }),
-			...(additionalFields.empty !== undefined &&
-				{ empty: additionalFields.empty }),
-			...(additionalFields.folderId && { folderId: additionalFields.folderId }),
-			...(additionalFields.itemNickname && {
-				itemNickname: {
-					...(additionalFields.itemNickname.plural &&
-						{ plural: additionalFields.itemNickname.plural }),
-					...(additionalFields.itemNickname.singular &&
-						{ singular: additionalFields.itemNickname.singular }),
-					...(additionalFields.itemNickname.presetType &&
-						{ preset_type: additionalFields.itemNickname.presetType }),
-				},
-			}),
-			...(additionalFields.workspaceId &&
-				{ workspaceId: additionalFields.workspaceId }),
-		},
+		query,
+		variables,
 	};
+
 	const response = await mondayProApiRequest.call(this, body);
 	return response.data.create_board;
 }
