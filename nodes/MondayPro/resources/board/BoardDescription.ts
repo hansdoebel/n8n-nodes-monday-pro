@@ -50,6 +50,12 @@ export const boardOperations: INodeProperties[] = [
 				action: "Get many boards",
 			},
 			{
+				name: "Set Permission",
+				value: "setPermission",
+				description: "Set a board's default role/permissions",
+				action: "Set board permission",
+			},
+			{
 				name: "Update",
 				value: "update",
 				description: "Update a board",
