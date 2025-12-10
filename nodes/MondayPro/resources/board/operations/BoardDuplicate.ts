@@ -1,7 +1,7 @@
 import type { INodeProperties } from "n8n-workflow";
 import type { IExecuteFunctions } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
-import { mondayProApiRequest } from "../../../GenericFunctions";
+import { mondayProApiRequest } from "@utils/GenericFunctions";
 
 export const boardDuplicate: INodeProperties[] = [
 	{
@@ -52,14 +52,16 @@ export const boardDuplicate: INodeProperties[] = [
 				name: "boardName",
 				type: "string",
 				default: "",
-				description: 'The board\'s name. If omitted, it will be automatically generated.',
+				description:
+					"The board's name. If omitted, it will be automatically generated.",
 			},
 			{
 				displayName: "Folder ID",
 				name: "folderId",
 				type: "string",
 				default: "",
-				description: 'The destination folder within the destination workspace. Required if duplicating to another workspace.',
+				description:
+					"The destination folder within the destination workspace. Required if duplicating to another workspace.",
 			},
 			{
 				displayName: "Keep Subscribers",
@@ -73,7 +75,8 @@ export const boardDuplicate: INodeProperties[] = [
 				name: "workspaceId",
 				type: "string",
 				default: "",
-				description: 'The destination workspace. If omitted, it will default to the original board\'s workspace.',
+				description:
+					"The destination workspace. If omitted, it will default to the original board's workspace.",
 			},
 		],
 	},

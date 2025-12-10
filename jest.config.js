@@ -21,6 +21,10 @@ module.exports = {
 		},
 	},
 	moduleNameMapper: {
+		'^@utils/(.*)$': '<rootDir>/nodes/MondayPro/utils/$1',
+		'^@types/(.*)$': '<rootDir>/nodes/MondayPro/types/$1',
+		'^@helpers/(.*)$': '<rootDir>/nodes/MondayPro/helpers/$1',
+		'^@resources/(.*)$': '<rootDir>/nodes/MondayPro/resources/$1',
 		'^@/(.*)$': '<rootDir>/nodes/$1',
 	},
 	testPathIgnorePatterns: ['/node_modules/', '/dist/'],

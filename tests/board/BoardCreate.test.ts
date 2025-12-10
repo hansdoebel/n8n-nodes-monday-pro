@@ -1,9 +1,9 @@
 import { boardCreateExecute } from "../../nodes/MondayPro/resources/board/operations/BoardCreate";
 import { ExecuteFunctionsMock } from "../mocks/ExecuteFunctionsMock";
 
-jest.mock("../../nodes/MondayPro/GenericFunctions");
+jest.mock("@utils/GenericFunctions");
 
-import { mondayProApiRequest } from "../../nodes/MondayPro/GenericFunctions";
+import { mondayProApiRequest } from "@utils/GenericFunctions";
 
 const mockMondayProApiRequest = mondayProApiRequest as jest.MockedFunction<
 	typeof mondayProApiRequest

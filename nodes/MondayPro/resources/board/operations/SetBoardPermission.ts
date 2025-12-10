@@ -1,7 +1,7 @@
 import type { INodeProperties } from "n8n-workflow";
 import type { IExecuteFunctions } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
-import { mondayProApiRequest } from "../../../GenericFunctions";
+import { mondayProApiRequest } from "@utils/GenericFunctions";
 
 export const setBoardPermission: INodeProperties[] = [
 	{

@@ -9,7 +9,7 @@ import {
 	jsonToGraphqlFields,
 	mondayProApiPaginatedRequest,
 	mondayProApiRequest,
-} from "../../../GenericFunctions";
+} from "@utils/GenericFunctions";
 
 export const boardItemGetFiltered: INodeProperties[] = [
 	{

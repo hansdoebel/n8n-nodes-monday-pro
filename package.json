@@ -55,7 +55,7 @@
 	},
 	"scripts": {
 		"preinstall": "npx only-allow pnpm",
-		"build": "tsc && gulp build:icons",
+		"build": "tsc && tsc-alias && gulp build:icons",
 		"dev": "tsc --watch",
 		"format": "prettier nodes credentials --write",
 		"lint": "eslint nodes credentials package.json",
@@ -92,6 +92,7 @@
 		"jest": "^30.2.0",
 		"prettier": "^3.7.4",
 		"ts-jest": "^29.4.6",
+		"tsc-alias": "^1.8.16",
 		"typescript": "^5.9.3"
 	}
 }

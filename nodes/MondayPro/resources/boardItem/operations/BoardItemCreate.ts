@@ -3,7 +3,7 @@ import type { IGraphqlBody } from "../../../types";
 import {
 	buildItemFieldsGraphQL,
 	mondayProApiRequest,
-} from "../../../GenericFunctions";
+} from "@utils/GenericFunctions";
 
 export const boardItemCreate: INodeProperties[] = [
 	{

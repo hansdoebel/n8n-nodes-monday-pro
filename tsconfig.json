@@ -20,11 +20,12 @@
 		"sourceMap": true,
 		"skipLibCheck": true,
 		"outDir": "./dist/",
+		"baseUrl": ".",
+		"paths": {
+			"@utils/*": ["nodes/MondayPro/utils/*"],
+			"@types/*": ["nodes/MondayPro/types/*"],
+			"@resources/*": ["nodes/MondayPro/resources/*"]
+		}
 	},
-	"include": [
-		"credentials/**/*",
-		"nodes/**/*",
-		"nodes/**/*.json",
-		"package.json",
-	],
+	"include": ["credentials/**/*", "nodes/**/*", "nodes/**/*.json", "package.json"]
 }

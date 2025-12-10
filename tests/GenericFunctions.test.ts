@@ -3,7 +3,7 @@ import {
 	buildItemFieldsGraphQL,
 	jsonToGraphqlFields,
 	mondayProApiRequest,
-} from "../nodes/MondayPro/GenericFunctions";
+} from "@utils/GenericFunctions";
 
 describe("GenericFunctions", () => {
 	describe("mondayProApiRequest", () => {

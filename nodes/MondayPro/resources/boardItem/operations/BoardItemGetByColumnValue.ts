@@ -3,7 +3,7 @@ import type { IGraphqlBody } from "../../../types";
 import {
 	mondayProApiPaginatedRequest,
 	mondayProApiRequest,
-} from "../../../GenericFunctions";
+} from "@utils/GenericFunctions";
 
 export const boardItemGetByColumnValue: INodeProperties[] = [
 	{

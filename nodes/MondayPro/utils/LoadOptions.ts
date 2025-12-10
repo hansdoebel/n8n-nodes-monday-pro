@@ -1,11 +1,11 @@
 import type { ILoadOptionsFunctions, INodePropertyOptions } from "n8n-workflow";
 
-import type { IGraphqlBody } from "./types";
+import type { IGraphqlBody } from "../types";
 
 import {
 	mondayProApiRequest,
 	mondayProApiRequestAllItems,
-} from "./GenericFunctions.js";
+} from "./GenericFunctions";
 
 export async function getBoards(
 	this: ILoadOptionsFunctions,

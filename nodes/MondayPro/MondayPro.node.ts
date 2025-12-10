@@ -15,7 +15,7 @@ import { boardWebhookDescription } from "./resources/boardWebhook";
 import { docsDescription } from "./resources/docs";
 import { folderDescription } from "./resources/folder";
 
-import * as LoadOptions from "./LoadOptions";
+import * as LoadOptions from "@utils/LoadOptions";
 
 import * as Ops from "./resources";
 
@@ -113,7 +113,7 @@ export class MondayPro implements INodeType {
 						value: "boardWebhook",
 					},
 					{
-						name: 'Doc',
+						name: "Doc",
 						value: "docs",
 					},
 					{
