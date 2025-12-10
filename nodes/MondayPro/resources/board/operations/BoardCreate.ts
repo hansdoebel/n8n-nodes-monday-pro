@@ -19,6 +19,7 @@ export const boardCreate: INodeProperties[] = [
 		type: "options",
 		default: "private",
 		required: true,
+		displayOptions: { show: { resource: ["board"], operation: ["create"] } },
 		description: "The type of board to create",
 		options: [
 			{ name: "Private", value: "private" },
@@ -139,9 +140,10 @@ export const boardCreate: INodeProperties[] = [
 
 export async function boardCreateExecute(this: IExecuteFunctions, i: number) {
 	const name = this.getNodeParameter("name", i) as string;
+	const boardKind = this.getNodeParameter("boardKind", i) as string;
+
 	const additionalFields = this.getNodeParameter("additionalFields", i, {}) as {
 		templateId?: number;
-		boardKind?: "private" | "public" | "share";
 		boardOwnerIds?: string;
 		boardOwnerTeamIds?: string;
 		boardSubscriberIds?: string;
@@ -157,15 +159,16 @@ export async function boardCreateExecute(this: IExecuteFunctions, i: number) {
 		workspaceId?: number;
 	};
 
-	const variables: Record<string, any> = { name };
-	const queryParams: string[] = ["$name: String!"];
-	const mutationArgs: string[] = ["board_name: $name"];
+	const variables: Record<string, any> = { name, boardKind };
+	const queryParams: string[] = [
+		"$name: String!",
+		"$boardKind: BoardKind!",
+	];
 
-	if (additionalFields.boardKind) {
-		variables.boardKind = additionalFields.boardKind;
-		queryParams.push("$boardKind: BoardKind!");
-		mutationArgs.push("board_kind: $boardKind");
-	}
+	const mutationArgs: string[] = [
+		"board_name: $name",
+		"board_kind: $boardKind",
+	];
 
 	if (additionalFields.boardOwnerIds) {
 		variables.boardOwnerIds = additionalFields.boardOwnerIds

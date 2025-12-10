@@ -55,6 +55,12 @@ export const boardOperations: INodeProperties[] = [
 				description: "Update a board",
 				action: "Update a board",
 			},
+			{
+				name: "Update Hierarchy",
+				value: "updateHierarchy",
+				description: "Update a board's position, workspace, or product",
+				action: "Update board hierarchy",
+			},
 		],
 		default: "create",
 	},
