@@ -61,6 +61,7 @@ export const boardCreate: INodeProperties[] = [
 				type: "string",
 				description:
 					"A list of IDs of users who will be board owners (comma-separated)",
+				default: "",
 			},
 			{
 				displayName: "Board Owner Team IDs",
@@ -68,6 +69,7 @@ export const boardCreate: INodeProperties[] = [
 				type: "string",
 				description:
 					"A list of IDs of teams that will be board owners (comma-separated)",
+				default: "",
 			},
 			{
 				displayName: "Board Subscriber IDs",
@@ -75,6 +77,7 @@ export const boardCreate: INodeProperties[] = [
 				type: "string",
 				description:
 					"A list of IDs of users who will subscribe to the board (comma-separated)",
+				default: "",
 			},
 			{
 				displayName: "Board Subscriber Team IDs",
@@ -82,56 +85,71 @@ export const boardCreate: INodeProperties[] = [
 				type: "string",
 				description:
 					"A list of IDs of teams that will subscribe to the board (comma-separated)",
+				default: "",
 			},
 			{
 				displayName: "Description",
 				name: "description",
 				type: "string",
 				description: "The new board's description",
+				default: "",
 			},
 			{
 				displayName: "Empty Board",
 				name: "empty",
 				type: "boolean",
 				description: "Creates an empty board without any default items",
+				default: false,
 			},
 			{
 				displayName: "Folder ID",
 				name: "folderId",
 				type: "number",
 				description: "The board's folder ID",
+				default: 0,
 			},
 			{
 				displayName: "Item Nickname",
 				name: "itemNickname",
 				type: "collection",
+				default: {},
 				description: "The nickname configuration for items on the board",
 				options: [
 					{
 						displayName: "Plural",
 						name: "plural",
 						type: "string",
+						default: "",
 						description: "Plural form of the item nickname",
 					},
 					{
 						displayName: "Singular",
 						name: "singular",
 						type: "string",
+						default: "",
 						description: "Singular form of the item nickname",
 					},
 					{
 						displayName: "Preset Type",
 						name: "presetType",
 						type: "string",
+						default: "",
 						description: "Preset type for the item nickname",
 					},
 				],
+				displayOptions: {
+					show: {
+						resource: ["board"],
+						operation: ["create"],
+					},
+				},
 			},
 			{
 				displayName: "Workspace ID",
 				name: "workspaceId",
 				type: "number",
 				description: "The board's workspace ID",
+				default: 0,
 			},
 		],
 	},
@@ -179,7 +197,7 @@ export async function boardCreateExecute(this: IExecuteFunctions, i: number) {
 			...(additionalFields.boardOwnerTeamIds &&
 				{
 					boardOwnerTeamIds: additionalFields.boardOwnerTeamIds.split(",").map(
-						(id) => id.trim()
+						(id) => id.trim(),
 					),
 				}),
 			...(additionalFields.boardSubscriberIds &&
