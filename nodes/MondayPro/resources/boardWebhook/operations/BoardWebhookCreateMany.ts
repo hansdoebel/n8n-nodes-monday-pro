@@ -101,7 +101,7 @@ export const boardWebhookCreateMany: INodeProperties[] = [
 						default: "",
 						required: true,
 						description: "The ID of the specific column to monitor for changes",
-						placeholder: "status",
+						placeholder: "columnId",
 						displayOptions: {
 							show: {
 								event: [
