@@ -21,6 +21,13 @@ export const boardWebhookOperations: INodeProperties[] = [
 					"Create a webhook for a board to receive events at a custom URL",
 			},
 			{
+				name: "Create Many",
+				value: "createMany",
+				action: "Create many webhooks",
+				description:
+					"Create many webhooks for a board to receive events at a custom URL",
+			},
+			{
 				name: "Delete",
 				value: "delete",
 				action: "Delete webhook",
