@@ -6,9 +6,14 @@ This is a custom n8n community node providing an extended integration with Monda
 
 It is an independent enhancement created for advanced workflow use cases.
 
----
+## Table of Contents
 
-## 📁 Features
+- [Features](#features)
+- [Installation](#installation)
+- [Resources](#resources)
+- [Version history](#version-history)
+
+## Features
 
 - **Current API-Version: 2025-10**
 - OAuth2 and API Token authentication
@@ -28,9 +33,7 @@ Create and manage:
 
 This package is ideal if you want more control over Monday.com data or if you need functionality missing in the default n8n Monday node.
 
----
-
-## 📦 Installation
+## Installation
 
 Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
 
@@ -50,9 +53,7 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 5. Agree to the risks of using community nodes: select I understand the risks of installing unverified code from a public source.
 6. Select Install. n8n installs the node, and returns to the Community Nodes list in Settings.
 
----
-
-## 🔗 Resources
+## Resources
 
 - [n8n Website](https://n8n.io/)
 - [n8n community nodes documentation](https://docs.n8n.io/integrations/community-nodes/)
@@ -60,11 +61,9 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 - [Monday.com Open API reference](https://developer.monday.com/api-reference/)
 - [GitHub Repository](https://github.com/hansdoebel/n8n-nodes-monday-pro)
 
----
+## Version history
 
-## 📜 Version history
-
-## Changelog
+### Changelog
 
 - **`0.0.9`** – Added operation to create many board webhooks
 - **`0.0.8`** – Added board: delete, duplicate, update, updateHierarchy, setBoardPermission; adjusted Create board operation. Added tests, constants, utils, types
