@@ -15,7 +15,7 @@ import { boardWebhookDescription } from "./resources/boardWebhook";
 import { docsDescription } from "./resources/docs";
 import { folderDescription } from "./resources/folder";
 
-import * as LoadOptions from "@utils/LoadOptions";
+import * as LoadOptions from "./utils/LoadOptions";
 
 import * as Ops from "./resources";
 

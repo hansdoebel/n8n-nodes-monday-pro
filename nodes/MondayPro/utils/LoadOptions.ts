@@ -1,7 +1,7 @@
 import type { ILoadOptionsFunctions, INodePropertyOptions } from "n8n-workflow";
 
-import type { IGraphqlBody } from "@types";
-import { GRAPHQL_QUERY_NAMES, NODE_PARAMETER_NAMES } from "@types";
+import type { IGraphqlBody } from "../types";
+import { GRAPHQL_QUERY_NAMES, NODE_PARAMETER_NAMES } from "../types";
 
 import {
 	mondayProApiRequest,

@@ -1,5 +1,5 @@
 import type { Icon, ICredentialType, INodeProperties } from "n8n-workflow";
-import { CREDENTIAL_TYPES } from "@types";
+import { CREDENTIAL_TYPES } from "../nodes/MondayPro/types";
 
 const scopes = ["boards:write", "boards:read"];
 

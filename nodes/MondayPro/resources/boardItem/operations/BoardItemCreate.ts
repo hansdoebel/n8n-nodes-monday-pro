@@ -1,9 +1,9 @@
 import type { IExecuteFunctions, INodeProperties } from "n8n-workflow";
-import type { IGraphqlBody } from "@types";
+import type { IGraphqlBody } from "../../../types";
 import {
 	buildItemFieldsGraphQL,
 	mondayProApiRequest,
-} from "@utils/GenericFunctions";
+} from "../../../utils/GenericFunctions";
 
 export const boardItemCreate: INodeProperties[] = [
 	{

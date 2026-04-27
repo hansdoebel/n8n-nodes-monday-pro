@@ -16,7 +16,7 @@ import {
 	CREDENTIAL_TYPES,
 	NODE_PARAMETER_NAMES,
 	PAGINATION_CONFIG,
-} from "@types";
+} from "../types";
 
 export async function mondayProApiRequest(
 	this:

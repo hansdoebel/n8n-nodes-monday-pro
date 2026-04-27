@@ -79,4 +79,4 @@ export {
 	NodeResources,
 	OPERATION_EXECUTION_SUFFIX,
 	PAGINATION_CONFIG,
-} from "@utils/Constants";
+} from "../utils/Constants";
