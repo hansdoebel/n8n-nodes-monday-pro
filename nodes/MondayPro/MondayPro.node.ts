@@ -19,16 +19,21 @@ import * as LoadOptions from "./utils/LoadOptions";
 
 import * as Ops from "./resources";
 
-const routers = {
-	board: Ops.BoardOps,
-	boardColumn: Ops.BoardColumnOps,
-	boardGroup: Ops.BoardGroupOps,
-	boardItem: Ops.BoardItemOps,
-	boardSubitem: Ops.BoardSubitemOps,
-	boardWebhook: Ops.BoardWebhookOps,
-	docs: Ops.DocsOps,
-	folder: Ops.FolderOps,
-} as Record<string, Record<string, any>>;
+type OperationExecuteFn = (
+	this: IExecuteFunctions,
+	i: number,
+) => Promise<unknown>;
+
+const routers: Record<string, Record<string, OperationExecuteFn>> = {
+	board: Ops.BoardOps as unknown as Record<string, OperationExecuteFn>,
+	boardColumn: Ops.BoardColumnOps as unknown as Record<string, OperationExecuteFn>,
+	boardGroup: Ops.BoardGroupOps as unknown as Record<string, OperationExecuteFn>,
+	boardItem: Ops.BoardItemOps as unknown as Record<string, OperationExecuteFn>,
+	boardSubitem: Ops.BoardSubitemOps as unknown as Record<string, OperationExecuteFn>,
+	boardWebhook: Ops.BoardWebhookOps as unknown as Record<string, OperationExecuteFn>,
+	docs: Ops.DocsOps as unknown as Record<string, OperationExecuteFn>,
+	folder: Ops.FolderOps as unknown as Record<string, OperationExecuteFn>,
+};
 
 export class MondayPro implements INodeType {
 	description: INodeTypeDescription = {
@@ -168,11 +173,15 @@ export class MondayPro implements INodeType {
 					);
 				}
 
-				const response = await (execFn as any).call(this, i);
+				const response = await execFn.call(this, i);
 
 				results.push(
 					...this.helpers.constructExecutionMetaData(
-						this.helpers.returnJsonArray(response),
+						this.helpers.returnJsonArray(
+							response as Parameters<
+								typeof this.helpers.returnJsonArray
+							>[0],
+						),
 						{ itemData: { item: i } },
 					),
 				);

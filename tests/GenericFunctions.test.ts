@@ -13,7 +13,7 @@ describe("GenericFunctions", () => {
 
 			const executeFunctions = new ExecuteFunctionsMock(
 				{ authentication: "accessToken" },
-				{ requestWithAuthentication: mockRequestWithAuth },
+				{ httpRequestWithAuthentication: mockRequestWithAuth },
 			);
 
 			const body = {
@@ -48,7 +48,7 @@ describe("GenericFunctions", () => {
 
 			const executeFunctions = new ExecuteFunctionsMock(
 				{ authentication: "oAuth2" },
-				{ requestWithAuthentication: mockRequestWithAuth },
+				{ httpRequestWithAuthentication: mockRequestWithAuth },
 			);
 
 			const body = {
@@ -72,7 +72,7 @@ describe("GenericFunctions", () => {
 			const mockRequestWithAuth = jest.fn().mockResolvedValue({});
 			const executeFunctions = new ExecuteFunctionsMock(
 				{ authentication: "accessToken" },
-				{ requestWithAuthentication: mockRequestWithAuth },
+				{ httpRequestWithAuthentication: mockRequestWithAuth },
 			);
 
 			const body = { query: "test" };
@@ -102,7 +102,7 @@ describe("GenericFunctions", () => {
 
 			const executeFunctions = new ExecuteFunctionsMock(
 				{ authentication: "accessToken" },
-				{ requestWithAuthentication: mockRequestWithAuth },
+				{ httpRequestWithAuthentication: mockRequestWithAuth },
 			);
 
 			const body = { query: "test" };
@@ -118,7 +118,7 @@ describe("GenericFunctions", () => {
 
 			const executeFunctions = new ExecuteFunctionsMock(
 				{ authentication: "accessToken" },
-				{ requestWithAuthentication: mockRequestWithAuth },
+				{ httpRequestWithAuthentication: mockRequestWithAuth },
 			);
 
 			const result = await mondayProApiRequest.call(

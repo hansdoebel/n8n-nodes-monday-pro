@@ -1,5 +1,4 @@
-import type { INodeProperties } from "n8n-workflow";
-import type { IExecuteFunctions } from "n8n-workflow";
+import type { INodeProperties, IExecuteFunctions  } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
 
@@ -73,7 +72,7 @@ export async function boardUpdateExecute(this: IExecuteFunctions, i: number) {
 
 	if (response.errors) {
 		const errorMessage = response.errors
-			.map((err: any) => err.message)
+			.map((err: { message: string }) => err.message)
 			.join(", ");
 		throw new Error(`GraphQL Error: ${errorMessage}`);
 	}

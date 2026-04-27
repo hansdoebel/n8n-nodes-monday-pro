@@ -66,16 +66,11 @@
 			"dist/nodes/MondayPro/MondayPro.node.js"
 		]
 	},
-	"dependencies": {
-		"change-case": "^5.4.4",
-		"lodash": "^4.17.21"
-	},
 	"peerDependencies": {
 		"n8n-workflow": "*"
 	},
 	"devDependencies": {
 		"@n8n/node-cli": "^0.23.1",
-		"@types/lodash": "^4.17.21",
 		"eslint": "^9.29.0",
 		"jest": "^30.2.0",
 		"prettier": "^3.8.1",

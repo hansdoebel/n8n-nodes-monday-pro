@@ -1,4 +1,3 @@
-import { snakeCase } from "change-case";
 import {
 	type IExecuteFunctions,
 	INodeProperties,
@@ -6,6 +5,13 @@ import {
 } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
+
+function snakeCase(value: string): string {
+	return value
+		.replace(/([a-z\d])([A-Z])/g, "$1_$2")
+		.replace(/[\s-]+/g, "_")
+		.toLowerCase();
+}
 
 export const boardColumnCreate: INodeProperties[] = [
 	{

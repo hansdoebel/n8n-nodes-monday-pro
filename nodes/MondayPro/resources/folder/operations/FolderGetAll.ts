@@ -1,5 +1,4 @@
-import type { IExecuteFunctions, INodeProperties } from "n8n-workflow";
-import type { IDataObject } from "n8n-workflow";
+import type { IExecuteFunctions, INodeProperties, IDataObject  } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
 

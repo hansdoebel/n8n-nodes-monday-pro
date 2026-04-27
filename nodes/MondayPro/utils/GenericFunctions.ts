@@ -1,4 +1,3 @@
-import get from "lodash/get";
 import type {
 	IDataObject,
 	IExecuteFunctions,
@@ -18,14 +17,27 @@ import {
 	PAGINATION_CONFIG,
 } from "../types";
 
+function get(obj: unknown, path: string): unknown {
+	return path
+		.replace(/\[(\d+)\]/g, ".$1")
+		.split(".")
+		.reduce<unknown>(
+			(acc, key) =>
+				acc == null ? acc : (acc as Record<string, unknown>)[key],
+			obj,
+		);
+}
+
 export async function mondayProApiRequest(
 	this:
 		| IExecuteFunctions
 		| IWebhookFunctions
 		| IHookFunctions
 		| ILoadOptionsFunctions,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	body: any = {},
 	option: IDataObject = {},
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
 	const authenticationMethod = this.getNodeParameter(
 		NODE_PARAMETER_NAMES.AUTHENTICATION,
@@ -47,7 +59,7 @@ export async function mondayProApiRequest(
 			? CREDENTIAL_TYPES.OAUTH2
 			: CREDENTIAL_TYPES.ACCESS_TOKEN;
 
-		return await this.helpers.requestWithAuthentication.call(
+		return await this.helpers.httpRequestWithAuthentication.call(
 			this,
 			credentialType,
 			mergedOptions,
@@ -60,7 +72,9 @@ export async function mondayProApiRequest(
 export async function mondayProApiRequestAllItems(
 	this: IHookFunctions | IExecuteFunctions | ILoadOptionsFunctions,
 	propertyName: string,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	body: any = {},
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
 	const returnData: IDataObject[] = [];
 
@@ -75,7 +89,7 @@ export async function mondayProApiRequestAllItems(
 			get(responseData, propertyName) as IDataObject[],
 		);
 		body.variables.page++;
-	} while (get(responseData, propertyName).length > 0);
+	} while ((get(responseData, propertyName) as IDataObject[]).length > 0);
 	return returnData;
 }
 
@@ -119,16 +133,16 @@ export async function mondayProApiPaginatedRequest(
 }
 
 export function buildItemFieldsGraphQL(
-	config: Record<string, any>,
+	config: Record<string, unknown>,
 	indent = 4,
 ): string {
 	const pad = " ".repeat(indent);
 	return Object.entries(config)
 		.map(([key, value]) => {
 			if (value === true) return `${pad}${key}`;
-			if (typeof value === "object") {
+			if (typeof value === "object" && value !== null) {
 				return `${pad}${key} {\n${
-					buildItemFieldsGraphQL(value, indent + 2)
+					buildItemFieldsGraphQL(value as Record<string, unknown>, indent + 2)
 				}\n${pad}}`;
 			}
 			return "";

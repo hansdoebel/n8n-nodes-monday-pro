@@ -1,5 +1,8 @@
-import type { INodeProperties } from "n8n-workflow";
-import type { IExecuteFunctions } from "n8n-workflow";
+import type {
+	IDataObject,
+	IExecuteFunctions,
+	INodeProperties,
+} from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
 
@@ -105,7 +108,7 @@ export async function boardUpdateHierarchyExecute(
 		};
 	};
 
-	const variables: Record<string, any> = { boardId };
+	const variables: IDataObject = { boardId };
 	const queryParams: string[] = ["$boardId: ID!"];
 	const attributeFields: string[] = [];
 
@@ -133,7 +136,7 @@ export async function boardUpdateHierarchyExecute(
 		additionalFieldsParam.position &&
 		Object.keys(additionalFieldsParam.position).length > 0
 	) {
-		const position: Record<string, any> = {};
+		const position: IDataObject = {};
 		if (additionalFieldsParam.position.objectId) {
 			position.object_id = additionalFieldsParam.position.objectId;
 		}
@@ -177,7 +180,7 @@ export async function boardUpdateHierarchyExecute(
 
 	if (response.errors) {
 		const errorMessage = response.errors
-			.map((err: any) => err.message)
+			.map((err: { message: string }) => err.message)
 			.join(", ");
 		throw new Error(`GraphQL Error: ${errorMessage}`);
 	}

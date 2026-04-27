@@ -1,10 +1,9 @@
 import type { Icon, ICredentialType, INodeProperties } from "n8n-workflow";
-import { CREDENTIAL_TYPES } from "../nodes/MondayPro/types";
 
 const scopes = ["boards:write", "boards:read"];
 
 export class MondayProOAuth2Api implements ICredentialType {
-	name = CREDENTIAL_TYPES.OAUTH2;
+	name = "mondayProOAuth2Api";
 	extends = ["oAuth2Api"];
 	displayName = "Monday.com (Pro) OAuth2 API";
 	icon: Icon = "file:../icons/mondayPro.svg";

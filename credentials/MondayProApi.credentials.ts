@@ -6,10 +6,10 @@ import type {
 	INodeProperties,
 } from "n8n-workflow";
 
-import { API_CONFIG, CREDENTIAL_TYPES } from "../nodes/MondayPro/types";
+import { API_CONFIG } from "../nodes/MondayPro/types";
 
 export class MondayProApi implements ICredentialType {
-	name = CREDENTIAL_TYPES.ACCESS_TOKEN;
+	name = "mondayProApi";
 	displayName = "Monday.com (Pro) API";
 	icon: Icon = "file:../icons/mondayPro.svg";
 	documentationUrl =

@@ -150,13 +150,19 @@ export async function boardItemCreateExecute(
 		"additionalFields",
 		i,
 		{},
-	) as any;
+	) as {
+		mode?: string;
+		columnValuesUi?: { columns?: Array<{ columnId?: string; value?: unknown }> };
+		columnValues?: string;
+		returnColumnIds?: string;
+		returnFieldsJson?: Record<string, unknown> | string;
+	};
 	const mode = additionalFields.mode || "simple";
 
-	let columnValuesObj: Record<string, any> = {};
+	let columnValuesObj: Record<string, unknown> = {};
 
 	if (mode === "simple" && additionalFields.columnValuesUi) {
-		const columns = (additionalFields.columnValuesUi as any).columns as any[];
+		const columns = additionalFields.columnValuesUi.columns;
 		if (Array.isArray(columns)) {
 			for (const col of columns) {
 				if (col.columnId && col.value) {
@@ -167,17 +173,20 @@ export async function boardItemCreateExecute(
 	}
 
 	if (mode === "advanced" && additionalFields.columnValues) {
-		columnValuesObj = JSON.parse(additionalFields.columnValues as string);
+		columnValuesObj = JSON.parse(additionalFields.columnValues);
 	}
 
 	let fieldSelection = "id";
 
 	if (additionalFields.returnFieldsJson) {
-		fieldSelection = buildItemFieldsGraphQL(additionalFields.returnFieldsJson);
+		const fields = typeof additionalFields.returnFieldsJson === "string"
+			? JSON.parse(additionalFields.returnFieldsJson) as Record<string, unknown>
+			: additionalFields.returnFieldsJson;
+		fieldSelection = buildItemFieldsGraphQL(fields);
 	}
 
 	if (additionalFields.returnColumnIds) {
-		const ids = (additionalFields.returnColumnIds as string)
+		const ids = additionalFields.returnColumnIds
 			.split(",")
 			.map((s) => s.trim())
 			.filter(Boolean);

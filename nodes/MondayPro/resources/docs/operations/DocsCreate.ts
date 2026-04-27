@@ -100,7 +100,7 @@ export const docsCreateDescription: INodeProperties[] = [
 export async function docsCreateExecute(this: IExecuteFunctions, i: number) {
 	const locationType = this.getNodeParameter("locationType", i) as string;
 
-	let location: Record<string, any> = {};
+	let location: Record<string, unknown> = {};
 
 	if (locationType === "workspace") {
 		const workspaceId = this.getNodeParameter("workspaceId", i) as string;

@@ -1,5 +1,8 @@
-import type { INodeProperties } from "n8n-workflow";
-import type { IExecuteFunctions } from "n8n-workflow";
+import type {
+	IDataObject,
+	IExecuteFunctions,
+	INodeProperties,
+} from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
 
@@ -159,7 +162,7 @@ export async function boardCreateExecute(this: IExecuteFunctions, i: number) {
 		workspaceId?: number;
 	};
 
-	const variables: Record<string, any> = { name, boardKind };
+	const variables: IDataObject = { name, boardKind };
 	const queryParams: string[] = [
 		"$name: String!",
 		"$boardKind: BoardKind!",
@@ -224,7 +227,7 @@ export async function boardCreateExecute(this: IExecuteFunctions, i: number) {
 		additionalFields.itemNickname &&
 		Object.keys(additionalFields.itemNickname).length > 0
 	) {
-		const itemNickname: Record<string, any> = {};
+		const itemNickname: IDataObject = {};
 		if (additionalFields.itemNickname.plural) {
 			itemNickname.plural = additionalFields.itemNickname.plural;
 		}
@@ -272,7 +275,7 @@ export async function boardCreateExecute(this: IExecuteFunctions, i: number) {
 
 	if (response.errors) {
 		const errorMessage = response.errors
-			.map((err: any) => err.message)
+			.map((err: { message: string }) => err.message)
 			.join(", ");
 		throw new Error(`GraphQL Error: ${errorMessage}`);
 	}

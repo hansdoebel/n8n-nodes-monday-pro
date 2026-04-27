@@ -8,7 +8,7 @@ export class ExecuteFunctionsMock {
 	) {
 		this.nodeParameters = nodeParameters;
 		this._helpers = helpers || {
-			requestWithAuthentication: jest.fn(),
+			httpRequestWithAuthentication: jest.fn(),
 		};
 	}
 

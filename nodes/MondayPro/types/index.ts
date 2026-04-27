@@ -20,7 +20,7 @@ export interface IPaginationCursor extends IDataObject {
 
 export interface IColumnValue extends IDataObject {
 	columnId: string;
-	value: string | number | boolean | Record<string, any>;
+	value: string | number | boolean | Record<string, unknown>;
 }
 
 export interface IBoardCreateRequest extends IDataObject {
@@ -46,7 +46,7 @@ export interface IItemCreateRequest extends IDataObject {
 	boardId: string | number;
 	groupId: string;
 	itemName: string;
-	columnValues?: Record<string, any>;
+	columnValues?: Record<string, unknown>;
 }
 
 export interface ILoadOptionsResponse extends IDataObject {

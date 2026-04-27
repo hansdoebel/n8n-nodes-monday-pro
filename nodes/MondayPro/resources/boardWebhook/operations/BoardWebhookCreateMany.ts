@@ -1,4 +1,5 @@
 import {
+	type IDataObject,
 	type IExecuteFunctions,
 	INodeProperties,
 	NodeOperationError,
@@ -165,7 +166,7 @@ export async function boardWebhookCreateManyExecute(
 	}
 
 	const mutations: string[] = [];
-	const variables: { [key: string]: any } = {};
+	const variables: IDataObject = {};
 	const webhookMetadata: Array<{
 		alias: string;
 		event: string;
@@ -196,7 +197,7 @@ export async function boardWebhookCreateManyExecute(
 				let parsedColumnValue;
 				try {
 					parsedColumnValue = JSON.parse(webhook.columnValue || "{}");
-				} catch (error) {
+				} catch {
 					throw new NodeOperationError(
 						this.getNode(),
 						`Invalid JSON in webhook ${
@@ -266,7 +267,7 @@ export async function boardWebhookCreateManyExecute(
 
 	if (response.errors && response.errors.length > 0) {
 		const errorMessages = response.errors
-			.map((err: any) => err.message)
+			.map((err: { message: string }) => err.message)
 			.join("; ");
 		throw new NodeOperationError(
 			this.getNode(),
@@ -277,7 +278,7 @@ export async function boardWebhookCreateManyExecute(
 
 	const results: Array<{
 		success: boolean;
-		webhook?: any;
+		webhook?: IDataObject;
 		error?: string;
 		metadata: {
 			index: number;
