@@ -1,5 +1,6 @@
 import type {
 	IAuthenticateGeneric,
+	Icon,
 	ICredentialTestRequest,
 	ICredentialType,
 	INodeProperties,
@@ -9,9 +10,8 @@ import { API_CONFIG, CREDENTIAL_TYPES } from "@types";
 
 export class MondayProApi implements ICredentialType {
 	name = CREDENTIAL_TYPES.ACCESS_TOKEN;
-
 	displayName = "Monday.com (Pro) API";
-
+	icon: Icon = "file:../icons/mondayPro.svg";
 	documentationUrl =
 		"https://developer.monday.com/api-reference/docs/authentication";
 

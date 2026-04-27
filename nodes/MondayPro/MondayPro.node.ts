@@ -34,7 +34,7 @@ export class MondayPro implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: "Monday.com (Pro)",
 		name: "mondayPro",
-		icon: "file:mondayPro.svg",
+		icon: "file:../../icons/mondayPro.svg",
 		group: ["output"],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
