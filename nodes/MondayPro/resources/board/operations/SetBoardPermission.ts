@@ -1,21 +1,21 @@
-import type { INodeProperties, IExecuteFunctions  } from "n8n-workflow";
+import type { IExecuteFunctions, INodeProperties } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
+import {
+	boardResourceLocator,
+	extractResourceLocatorValue,
+} from "../../../utils/resourceLocator";
 
 export const setBoardPermission: INodeProperties[] = [
-	{
-		displayName: "Board Name or ID",
+	boardResourceLocator({
+		displayName: "Board",
 		name: "boardId",
-		type: "options",
-		typeOptions: { loadOptionsMethod: "getBoards" },
-		default: "",
 		required: true,
+		description: "The board whose default permission to update",
 		displayOptions: {
 			show: { resource: ["board"], operation: ["setPermission"] },
 		},
-		description:
-			'Board unique identifier. Choose from the list or specify by ID using an expression. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
-	},
+	}),
 	{
 		displayName: "Basic Role Name",
 		name: "basicRoleName",
@@ -38,7 +38,9 @@ export async function boardSetPermissionExecute(
 	this: IExecuteFunctions,
 	i: number,
 ) {
-	const boardId = this.getNodeParameter("boardId", i);
+	const boardId = extractResourceLocatorValue(
+		this.getNodeParameter("boardId", i),
+	);
 	const basicRoleName = this.getNodeParameter("basicRoleName", i) as string;
 
 	const query = `mutation ($boardId: ID!, $basicRoleName: BoardBasicRoleName!) {

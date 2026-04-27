@@ -5,6 +5,10 @@ import {
 } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
+import {
+	boardResourceLocator,
+	extractResourceLocatorValue,
+} from "../../../utils/resourceLocator";
 
 function snakeCase(value: string): string {
 	return value
@@ -14,24 +18,15 @@ function snakeCase(value: string): string {
 }
 
 export const boardColumnCreate: INodeProperties[] = [
-	{
-		displayName: "Board Name or ID",
+	boardResourceLocator({
+		displayName: "Board",
 		name: "boardId",
-		type: "options",
-		description:
-			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-		typeOptions: {
-			loadOptionsMethod: "getBoards",
-		},
-		default: "",
 		required: true,
+		description: "The board to add the column to",
 		displayOptions: {
-			show: {
-				resource: ["boardColumn"],
-				operation: ["create"],
-			},
+			show: { resource: ["boardColumn"], operation: ["create"] },
 		},
-	},
+	}),
 	{
 		displayName: "Title",
 		name: "title",
@@ -112,7 +107,9 @@ export async function boardColumnCreateExecute(
 	this: IExecuteFunctions,
 	i: number,
 ) {
-	const boardId = this.getNodeParameter("boardId", i);
+	const boardId = extractResourceLocatorValue(
+		this.getNodeParameter("boardId", i),
+	);
 	const title = this.getNodeParameter("title", i) as string;
 	const columnType = this.getNodeParameter("columnType", i) as string;
 	const additionalFields = this.getNodeParameter("additionalFields", i, {}) as {

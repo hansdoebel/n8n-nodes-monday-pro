@@ -16,6 +16,7 @@ import { docsDescription } from "./resources/docs";
 import { folderDescription } from "./resources/folder";
 
 import * as LoadOptions from "./utils/LoadOptions";
+import * as ListSearch from "./utils/ListSearch";
 
 import * as Ops from "./resources";
 
@@ -142,6 +143,9 @@ export class MondayPro implements INodeType {
 	methods = {
 		loadOptions: {
 			...LoadOptions,
+		},
+		listSearch: {
+			...ListSearch,
 		},
 	};
 

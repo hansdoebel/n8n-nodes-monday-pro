@@ -1,23 +1,27 @@
 import type { IExecuteFunctions, INodeProperties } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
+import {
+	extractResourceLocatorValue,
+	folderResourceLocator,
+} from "../../../utils/resourceLocator";
 
 export const folderDelete: INodeProperties[] = [
-	{
-		displayName: "Folder ID",
+	folderResourceLocator({
+		displayName: "Folder",
 		name: "folderId",
-		type: "string",
-		default: "",
 		required: true,
+		description: "The folder to delete",
 		displayOptions: {
 			show: { resource: ["folder"], operation: ["delete"] },
 		},
-		description: "The ID of the folder to delete",
-	},
+	}),
 ];
 
 export async function folderDeleteExecute(this: IExecuteFunctions, i: number) {
-	const folderId = this.getNodeParameter("folderId", i) as string;
+	const folderId = extractResourceLocatorValue(
+		this.getNodeParameter("folderId", i),
+	);
 
 	const body: IGraphqlBody = {
 		query: `mutation ($folderId: ID!) {

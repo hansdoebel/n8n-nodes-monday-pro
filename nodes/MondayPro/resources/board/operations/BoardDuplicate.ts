@@ -5,17 +5,21 @@ import type {
 } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
+import {
+	boardResourceLocator,
+	extractResourceLocatorValue,
+	folderResourceLocator,
+	workspaceResourceLocator,
+} from "../../../utils/resourceLocator";
 
 export const boardDuplicate: INodeProperties[] = [
-	{
-		displayName: "Board ID",
+	boardResourceLocator({
+		displayName: "Board",
 		name: "boardId",
-		type: "string",
 		required: true,
-		default: "",
+		description: "The board to duplicate",
 		displayOptions: { show: { resource: ["board"], operation: ["duplicate"] } },
-		description: "The board's unique identifier",
-	},
+	}),
 	{
 		displayName: "Duplicate Type",
 		name: "duplicateType",
@@ -56,30 +60,26 @@ export const boardDuplicate: INodeProperties[] = [
 				type: "string",
 				default: "",
 				description:
-					"The board's name. If omitted, it will be automatically generated.",
+					"The new board's name. If omitted, it will be automatically generated.",
 			},
-			{
-				displayName: "Folder ID",
+			workspaceResourceLocator({
+				displayName: "Workspace",
+				name: "workspaceId",
+				description:
+					"The destination workspace. If omitted, it will default to the original board's workspace.",
+			}),
+			folderResourceLocator({
+				displayName: "Folder",
 				name: "folderId",
-				type: "string",
-				default: "",
 				description:
 					"The destination folder within the destination workspace. Required if duplicating to another workspace.",
-			},
+			}),
 			{
 				displayName: "Keep Subscribers",
 				name: "keepSubscribers",
 				type: "boolean",
 				default: false,
 				description: "Whether to duplicate the subscribers to the new board",
-			},
-			{
-				displayName: "Workspace ID",
-				name: "workspaceId",
-				type: "string",
-				default: "",
-				description:
-					"The destination workspace. If omitted, it will default to the original board's workspace.",
 			},
 		],
 	},
@@ -89,13 +89,15 @@ export async function boardDuplicateExecute(
 	this: IExecuteFunctions,
 	i: number,
 ) {
-	const boardId = this.getNodeParameter("boardId", i) as string;
+	const boardId = extractResourceLocatorValue(
+		this.getNodeParameter("boardId", i),
+	);
 	const duplicateType = this.getNodeParameter("duplicateType", i) as string;
 	const additionalFields = this.getNodeParameter("additionalFields", i, {}) as {
 		boardName?: string;
-		folderId?: string;
+		folderId?: unknown;
 		keepSubscribers?: boolean;
-		workspaceId?: string;
+		workspaceId?: unknown;
 	};
 
 	const variables: IDataObject = {
@@ -117,8 +119,9 @@ export async function boardDuplicateExecute(
 		mutationArgs.push("board_name: $boardName");
 	}
 
-	if (additionalFields.folderId) {
-		variables.folderId = additionalFields.folderId;
+	const folderId = extractResourceLocatorValue(additionalFields.folderId);
+	if (folderId) {
+		variables.folderId = folderId;
 		queryParams.push("$folderId: ID");
 		mutationArgs.push("folder_id: $folderId");
 	}
@@ -129,8 +132,9 @@ export async function boardDuplicateExecute(
 		mutationArgs.push("keep_subscribers: $keepSubscribers");
 	}
 
-	if (additionalFields.workspaceId) {
-		variables.workspaceId = additionalFields.workspaceId;
+	const workspaceId = extractResourceLocatorValue(additionalFields.workspaceId);
+	if (workspaceId) {
+		variables.workspaceId = workspaceId;
 		queryParams.push("$workspaceId: ID");
 		mutationArgs.push("workspace_id: $workspaceId");
 	}

@@ -98,3 +98,44 @@ export async function getGroups(
 	}
 	return returnData;
 }
+
+export async function getUsers(
+	this: ILoadOptionsFunctions,
+): Promise<INodePropertyOptions[]> {
+	const body: IGraphqlBody = {
+		query: `query ($page: Int, $limit: Int) {
+			${GRAPHQL_QUERY_NAMES.USERS} (page: $page, limit: $limit) {
+				id
+				name
+				email
+			}
+		}`,
+		variables: { page: 1 },
+	};
+	const users = await mondayProApiRequestAllItems.call(this, "data.users", body);
+	if (!users) return [];
+	return users.map((user: { id: string; name: string; email?: string }) => ({
+		name: user.email ? `${user.name} (${user.email})` : user.name,
+		value: String(user.id),
+	}));
+}
+
+export async function getTeams(
+	this: ILoadOptionsFunctions,
+): Promise<INodePropertyOptions[]> {
+	const body: IGraphqlBody = {
+		query: `query {
+			${GRAPHQL_QUERY_NAMES.TEAMS} {
+				id
+				name
+			}
+		}`,
+		variables: {},
+	};
+	const { data } = await mondayProApiRequest.call(this, body);
+	if (!data?.teams) return [];
+	return (data.teams as Array<{ id: string; name: string }>).map((team) => ({
+		name: team.name,
+		value: String(team.id),
+	}));
+}

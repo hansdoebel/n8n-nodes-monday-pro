@@ -6,21 +6,21 @@ import {
 } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
+import {
+	boardResourceLocator,
+	extractResourceLocatorValue,
+} from "../../../utils/resourceLocator";
 
 export const boardWebhookCreateMany: INodeProperties[] = [
-	{
-		displayName: "Board Name or ID",
+	boardResourceLocator({
+		displayName: "Board",
 		name: "boardId",
-		type: "options",
-		typeOptions: { loadOptionsMethod: "getBoards" },
-		default: "",
 		required: true,
+		description: "The board to subscribe webhooks to",
 		displayOptions: {
 			show: { resource: ["boardWebhook"], operation: ["createMany"] },
 		},
-		description:
-			'Board to subscribe webhooks for. Choose from list or specify an ID using an expression. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
-	},
+	}),
 	{
 		displayName: "Webhooks",
 		name: "webhooks",
@@ -137,7 +137,9 @@ export async function boardWebhookCreateManyExecute(
 	this: IExecuteFunctions,
 	i: number,
 ) {
-	const boardId = this.getNodeParameter("boardId", i) as string;
+	const boardId = extractResourceLocatorValue(
+		this.getNodeParameter("boardId", i),
+	);
 	const webhooksData = this.getNodeParameter(
 		"webhooks.webhook",
 		i,

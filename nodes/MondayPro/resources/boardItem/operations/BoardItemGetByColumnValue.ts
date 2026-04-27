@@ -4,37 +4,31 @@ import {
 	mondayProApiPaginatedRequest,
 	mondayProApiRequest,
 } from "../../../utils/GenericFunctions";
+import {
+	boardResourceLocator,
+	columnResourceLocator,
+	extractResourceLocatorValue,
+} from "../../../utils/resourceLocator";
 
 export const boardItemGetByColumnValue: INodeProperties[] = [
-	{
-		displayName: "Board Name or ID",
+	boardResourceLocator({
+		displayName: "Board",
 		name: "boardId",
-		type: "options",
-		description:
-			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-		typeOptions: { loadOptionsMethod: "getBoards" },
-		default: "",
 		required: true,
+		description: "The board to search in",
 		displayOptions: {
 			show: { resource: ["boardItem"], operation: ["getByColumnValue"] },
 		},
-	},
-	{
-		displayName: "Column Name or ID",
+	}),
+	columnResourceLocator({
+		displayName: "Column",
 		name: "columnId",
-		type: "options",
-		description:
-			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-		typeOptions: {
-			loadOptionsMethod: "getColumns",
-			loadOptionsDependsOn: ["boardId"],
-		},
-		default: "",
 		required: true,
+		description: "The column to filter by",
 		displayOptions: {
 			show: { resource: ["boardItem"], operation: ["getByColumnValue"] },
 		},
-	},
+	}),
 	{
 		displayName: "Column Value",
 		name: "columnValue",
@@ -76,8 +70,12 @@ export async function boardItemGetByColumnValueExecute(
 	this: IExecuteFunctions,
 	i: number,
 ) {
-	const boardId = this.getNodeParameter("boardId", i);
-	const columnId = this.getNodeParameter("columnId", i) as string;
+	const boardId = extractResourceLocatorValue(
+		this.getNodeParameter("boardId", i),
+	);
+	const columnId = extractResourceLocatorValue(
+		this.getNodeParameter("columnId", i),
+	);
 	const columnValue = this.getNodeParameter("columnValue", i) as string;
 	const returnAll = this.getNodeParameter("returnAll", i);
 

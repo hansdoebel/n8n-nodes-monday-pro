@@ -1,25 +1,27 @@
 import type { IExecuteFunctions, INodeProperties } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
+import {
+	boardResourceLocator,
+	extractResourceLocatorValue,
+} from "../../../utils/resourceLocator";
 
 export const boardArchive: INodeProperties[] = [
-	{
-		displayName: "Board Name or ID",
+	boardResourceLocator({
+		displayName: "Board",
 		name: "boardId",
-		type: "options",
-		typeOptions: { loadOptionsMethod: "getBoards" },
-		default: "",
 		required: true,
+		description: "The board to archive",
 		displayOptions: {
 			show: { resource: ["board"], operation: ["archive"] },
 		},
-		description:
-			'Board unique identifier. Choose from the list or specify by ID using an expression. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
-	},
+	}),
 ];
 
 export async function boardArchiveExecute(this: IExecuteFunctions, i: number) {
-	const boardId = this.getNodeParameter("boardId", i);
+	const boardId = extractResourceLocatorValue(
+		this.getNodeParameter("boardId", i),
+	);
 	const body: IGraphqlBody = {
 		query: `mutation ($id: ID!) {
 			archive_board (board_id: $id) {

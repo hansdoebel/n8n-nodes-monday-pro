@@ -2,6 +2,11 @@ import type { IExecuteFunctions, INodeProperties } from "n8n-workflow";
 import { NodeOperationError } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
+import {
+	extractResourceLocatorValue,
+	itemResourceLocator,
+	workspaceResourceLocator,
+} from "../../../utils/resourceLocator";
 
 export const docsCreateDescription: INodeProperties[] = [
 	{
@@ -16,11 +21,11 @@ export const docsCreateDescription: INodeProperties[] = [
 		displayOptions: { show: { resource: ["docs"], operation: ["create"] } },
 		description: "Where the new doc should be created",
 	},
-	{
-		displayName: "Workspace ID",
+	workspaceResourceLocator({
+		displayName: "Workspace",
 		name: "workspaceId",
-		type: "string",
-		default: "",
+		required: true,
+		description: "The workspace in which to create the doc",
 		displayOptions: {
 			show: {
 				resource: ["docs"],
@@ -28,9 +33,7 @@ export const docsCreateDescription: INodeProperties[] = [
 				locationType: ["workspace"],
 			},
 		},
-		description: "The ID of the workspace in which to create the doc",
-		required: true,
-	},
+	}),
 	{
 		displayName: "Name",
 		name: "name",
@@ -65,12 +68,11 @@ export const docsCreateDescription: INodeProperties[] = [
 		},
 		description: "Document visibility kind (for workspace docs)",
 	},
-	{
-		displayName: "Item ID",
+	itemResourceLocator({
+		displayName: "Item",
 		name: "itemId",
-		type: "string",
-		default: "",
 		required: true,
+		description: "The item to create the doc on",
 		displayOptions: {
 			show: {
 				resource: ["docs"],
@@ -78,8 +80,7 @@ export const docsCreateDescription: INodeProperties[] = [
 				locationType: ["board"],
 			},
 		},
-		description: "The ID of the item to create the doc on",
-	},
+	}),
 	{
 		displayName: "Column ID",
 		name: "columnId",
@@ -93,7 +94,7 @@ export const docsCreateDescription: INodeProperties[] = [
 				locationType: ["board"],
 			},
 		},
-		description: "The ID of the column to create the doc in",
+		description: "The ID of the doc column to create the doc in",
 	},
 ];
 
@@ -103,7 +104,9 @@ export async function docsCreateExecute(this: IExecuteFunctions, i: number) {
 	let location: Record<string, unknown> = {};
 
 	if (locationType === "workspace") {
-		const workspaceId = this.getNodeParameter("workspaceId", i) as string;
+		const workspaceId = extractResourceLocatorValue(
+			this.getNodeParameter("workspaceId", i),
+		);
 		const name = this.getNodeParameter("name", i) as string;
 		const kind = this.getNodeParameter("kind", i) as string;
 
@@ -115,7 +118,9 @@ export async function docsCreateExecute(this: IExecuteFunctions, i: number) {
 			},
 		};
 	} else if (locationType === "board") {
-		const itemId = this.getNodeParameter("itemId", i) as string;
+		const itemId = extractResourceLocatorValue(
+			this.getNodeParameter("itemId", i),
+		);
 		const columnId = this.getNodeParameter("columnId", i) as string;
 
 		location = {

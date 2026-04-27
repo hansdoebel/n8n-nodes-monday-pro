@@ -4,37 +4,31 @@ import {
 	buildItemFieldsGraphQL,
 	mondayProApiRequest,
 } from "../../../utils/GenericFunctions";
+import {
+	boardResourceLocator,
+	extractResourceLocatorValue,
+	groupResourceLocator,
+} from "../../../utils/resourceLocator";
 
 export const boardItemCreate: INodeProperties[] = [
-	{
-		displayName: "Board Name or ID",
+	boardResourceLocator({
+		displayName: "Board",
 		name: "boardId",
-		type: "options",
-		description:
-			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-		typeOptions: { loadOptionsMethod: "getBoards" },
-		default: "",
 		required: true,
+		description: "The board to create the item on",
 		displayOptions: {
 			show: { resource: ["boardItem"], operation: ["create"] },
 		},
-	},
-	{
-		displayName: "Group Name or ID",
+	}),
+	groupResourceLocator({
+		displayName: "Group",
 		name: "groupId",
-		type: "options",
-		description:
-			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-		typeOptions: {
-			loadOptionsMethod: "getGroups",
-			loadOptionsDependsOn: ["boardId"],
-		},
-		default: "",
 		required: true,
+		description: "The group within the board to add the item to",
 		displayOptions: {
 			show: { resource: ["boardItem"], operation: ["create"] },
 		},
-	},
+	}),
 	{
 		displayName: "Name",
 		name: "name",
@@ -143,8 +137,12 @@ export async function boardItemCreateExecute(
 	this: IExecuteFunctions,
 	i: number,
 ) {
-	const boardId = this.getNodeParameter("boardId", i);
-	const groupId = this.getNodeParameter("groupId", i);
+	const boardId = extractResourceLocatorValue(
+		this.getNodeParameter("boardId", i),
+	);
+	const groupId = extractResourceLocatorValue(
+		this.getNodeParameter("groupId", i),
+	);
 	const itemName = this.getNodeParameter("name", i);
 	const additionalFields = this.getNodeParameter(
 		"additionalFields",

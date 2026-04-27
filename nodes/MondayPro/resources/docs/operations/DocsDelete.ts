@@ -1,21 +1,25 @@
 import type { IExecuteFunctions, INodeProperties } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
+import {
+	docResourceLocator,
+	extractResourceLocatorValue,
+} from "../../../utils/resourceLocator";
 
 export const docsDeleteDescription: INodeProperties[] = [
-	{
-		displayName: "Doc ID",
+	docResourceLocator({
+		displayName: "Doc",
 		name: "docId",
-		type: "string",
-		default: "",
 		required: true,
+		description: "The doc to delete",
 		displayOptions: { show: { resource: ["docs"], operation: ["delete"] } },
-		description: "The ID of the doc to delete",
-	},
+	}),
 ];
 
 export async function docsDeleteExecute(this: IExecuteFunctions, i: number) {
-	const docId = this.getNodeParameter("docId", i);
+	const docId = extractResourceLocatorValue(
+		this.getNodeParameter("docId", i),
+	);
 
 	const body: IGraphqlBody = {
 		query: `mutation ($docId: ID!) { delete_doc (docId: $docId)	}`,

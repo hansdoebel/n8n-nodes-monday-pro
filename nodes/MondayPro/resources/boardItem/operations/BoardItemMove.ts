@@ -1,46 +1,44 @@
 import type { IExecuteFunctions, INodeProperties } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
+import {
+	boardResourceLocator,
+	extractResourceLocatorValue,
+	groupResourceLocator,
+	itemResourceLocator,
+} from "../../../utils/resourceLocator";
 
 export const boardItemMove: INodeProperties[] = [
-	{
-		displayName: "Board Name or ID",
+	boardResourceLocator({
+		displayName: "Board",
 		name: "boardId",
-		type: "options",
-		description:
-			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-		typeOptions: { loadOptionsMethod: "getBoards" },
-		default: "",
 		required: true,
+		description: "The board the item belongs to",
 		displayOptions: { show: { resource: ["boardItem"], operation: ["move"] } },
-	},
-	{
-		displayName: "Item ID",
+	}),
+	itemResourceLocator({
+		displayName: "Item",
 		name: "itemId",
-		type: "string",
 		required: true,
-		default: "",
+		description: "The item to move",
 		displayOptions: { show: { resource: ["boardItem"], operation: ["move"] } },
-	},
-	{
-		displayName: "Group Name or ID",
+	}),
+	groupResourceLocator({
+		displayName: "Group",
 		name: "groupId",
-		type: "options",
-		description:
-			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-		typeOptions: {
-			loadOptionsMethod: "getGroups",
-			loadOptionsDependsOn: ["boardId"],
-		},
-		default: "",
 		required: true,
+		description: "The destination group",
 		displayOptions: { show: { resource: ["boardItem"], operation: ["move"] } },
-	},
+	}),
 ];
 
 export async function boardItemMoveExecute(this: IExecuteFunctions, i: number) {
-	const groupId = this.getNodeParameter("groupId", i) as string;
-	const itemId = this.getNodeParameter("itemId", i);
+	const groupId = extractResourceLocatorValue(
+		this.getNodeParameter("groupId", i),
+	);
+	const itemId = extractResourceLocatorValue(
+		this.getNodeParameter("itemId", i),
+	);
 
 	const body: IGraphqlBody = {
 		query: `mutation ($groupId: String!, $itemId: ID!) {

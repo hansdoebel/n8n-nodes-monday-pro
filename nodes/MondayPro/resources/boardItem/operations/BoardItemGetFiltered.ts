@@ -1,7 +1,7 @@
 import {
 	type IExecuteFunctions,
 	INodeProperties,
-	NodeOperationError, IDataObject 
+	NodeOperationError, IDataObject
 } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import {
@@ -9,21 +9,22 @@ import {
 	mondayProApiPaginatedRequest,
 	mondayProApiRequest,
 } from "../../../utils/GenericFunctions";
+import {
+	boardResourceLocator,
+	extractResourceLocatorValue,
+} from "../../../utils/resourceLocator";
 
 export const boardItemGetFiltered: INodeProperties[] = [
-	{
-		displayName: "Board Name or ID",
+	boardResourceLocator({
+		displayName: "Board",
 		name: "boardId",
-		type: "options",
-		description:
-			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-		typeOptions: { loadOptionsMethod: "getBoards" },
-		default: "",
 		required: true,
+		description:
+			"The board to search in. Use \"By ID\" mode for comma-separated IDs to query multiple boards.",
 		displayOptions: {
 			show: { resource: ["boardItem"], operation: ["getFiltered"] },
 		},
-	},
+	}),
 	{
 		displayName: "Return All",
 		name: "returnAll",
@@ -75,10 +76,13 @@ export async function boardItemGetFilteredExecute(
 	this: IExecuteFunctions,
 	i: number,
 ) {
-	const rawBoardId = this.getNodeParameter("boardId", i) as string | string[];
-	let boardIds: string[];
-	if (Array.isArray(rawBoardId)) boardIds = rawBoardId;
-	else boardIds = rawBoardId.split(",").map((id) => id.trim()).filter(Boolean);
+	const rawBoardId = extractResourceLocatorValue(
+		this.getNodeParameter("boardId", i),
+	);
+	const boardIds = rawBoardId
+		.split(",")
+		.map((id) => id.trim())
+		.filter(Boolean);
 
 	const returnAll = this.getNodeParameter("returnAll", i) as boolean;
 	const fieldsJson = this.getNodeParameter("fieldsJson", i, "") as string;

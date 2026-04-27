@@ -1,21 +1,25 @@
 import type { IExecuteFunctions, INodeProperties } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
+import {
+	docResourceLocator,
+	extractResourceLocatorValue,
+} from "../../../utils/resourceLocator";
 
 export const docsGetDescription: INodeProperties[] = [
-	{
-		displayName: "Doc ID",
+	docResourceLocator({
+		displayName: "Doc",
 		name: "docId",
-		type: "string",
-		default: "",
 		required: true,
+		description: "The doc to retrieve",
 		displayOptions: { show: { resource: ["docs"], operation: ["get"] } },
-		description: "The unique identifier of the doc to retrieve",
-	},
+	}),
 ];
 
 export async function docsGetExecute(this: IExecuteFunctions, i: number) {
-	const docId = this.getNodeParameter("docId", i);
+	const docId = extractResourceLocatorValue(
+		this.getNodeParameter("docId", i),
+	);
 
 	const body: IGraphqlBody = {
 		query: `query ($docId: ID!) {

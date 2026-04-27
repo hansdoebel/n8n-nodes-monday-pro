@@ -4,37 +4,31 @@ import {
 	mondayProApiPaginatedRequest,
 	mondayProApiRequest,
 } from "../../../utils/GenericFunctions";
+import {
+	boardResourceLocator,
+	extractResourceLocatorValue,
+	groupResourceLocator,
+} from "../../../utils/resourceLocator";
 
 export const boardItemGetAll: INodeProperties[] = [
-	{
-		displayName: "Board Name or ID",
+	boardResourceLocator({
+		displayName: "Board",
 		name: "boardId",
-		type: "options",
-		description:
-			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-		typeOptions: { loadOptionsMethod: "getBoards" },
-		default: "",
 		required: true,
+		description: "The board to list items from",
 		displayOptions: {
 			show: { resource: ["boardItem"], operation: ["getAll"] },
 		},
-	},
-	{
-		displayName: "Group Name or ID",
+	}),
+	groupResourceLocator({
+		displayName: "Group",
 		name: "groupId",
-		type: "options",
-		description:
-			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-		typeOptions: {
-			loadOptionsMethod: "getGroups",
-			loadOptionsDependsOn: ["boardId"],
-		},
-		default: "",
 		required: true,
+		description: "The group within the board to list items from",
 		displayOptions: {
 			show: { resource: ["boardItem"], operation: ["getAll"] },
 		},
-	},
+	}),
 	{
 		displayName: "Return All",
 		name: "returnAll",
@@ -66,8 +60,12 @@ export async function boardItemGetAllExecute(
 	this: IExecuteFunctions,
 	i: number,
 ) {
-	const boardId = this.getNodeParameter("boardId", i);
-	const groupId = this.getNodeParameter("groupId", i);
+	const boardId = extractResourceLocatorValue(
+		this.getNodeParameter("boardId", i),
+	);
+	const groupId = extractResourceLocatorValue(
+		this.getNodeParameter("groupId", i),
+	);
 	const returnAll = this.getNodeParameter("returnAll", i);
 
 	const fieldsToReturn = `

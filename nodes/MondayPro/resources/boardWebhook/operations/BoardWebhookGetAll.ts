@@ -1,21 +1,21 @@
 import type { IExecuteFunctions, INodeProperties } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
+import {
+	boardResourceLocator,
+	extractResourceLocatorValue,
+} from "../../../utils/resourceLocator";
 
 export const boardWebhookGetAll: INodeProperties[] = [
-	{
-		displayName: "Board Name or ID",
+	boardResourceLocator({
+		displayName: "Board",
 		name: "boardId",
-		type: "options",
-		typeOptions: { loadOptionsMethod: "getBoards" },
-		default: "",
 		required: true,
+		description: "The board to list webhooks for",
 		displayOptions: {
 			show: { resource: ["boardWebhook"], operation: ["getAll"] },
 		},
-		description:
-			'Board to list webhooks for. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
-	},
+	}),
 	{
 		displayName: "Return All",
 		name: "returnAll",
@@ -47,7 +47,9 @@ export async function boardWebhookGetAllExecute(
 	this: IExecuteFunctions,
 	i: number,
 ) {
-	const boardId = this.getNodeParameter("boardId", i);
+	const boardId = extractResourceLocatorValue(
+		this.getNodeParameter("boardId", i),
+	);
 	const returnAll = this.getNodeParameter("returnAll", i) as boolean;
 
 	const body: IGraphqlBody = {

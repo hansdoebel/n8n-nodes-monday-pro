@@ -5,6 +5,11 @@ import type {
 } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
+import {
+	extractResourceLocatorValue,
+	folderResourceLocator,
+	workspaceResourceLocator,
+} from "../../../utils/resourceLocator";
 
 export const boardCreate: INodeProperties[] = [
 	{
@@ -53,13 +58,16 @@ export const boardCreate: INodeProperties[] = [
 				description:
 					"Whether to create an empty board without any default items",
 			},
-			{
-				displayName: "Folder ID",
+			workspaceResourceLocator({
+				displayName: "Workspace",
+				name: "workspaceId",
+				description: "The board's destination workspace",
+			}),
+			folderResourceLocator({
+				displayName: "Folder",
 				name: "folderId",
-				type: "number",
-				default: 0,
-				description: "The board's folder ID",
-			},
+				description: "The board's destination folder",
+			}),
 			{
 				displayName: "Item Nickname",
 				name: "itemNickname",
@@ -91,36 +99,40 @@ export const boardCreate: INodeProperties[] = [
 				],
 			},
 			{
-				displayName: "Owner IDs",
+				displayName: "Owner Names or IDs",
 				name: "boardOwnerIds",
-				type: "string",
-				default: "",
+				type: "multiOptions",
+				typeOptions: { loadOptionsMethod: "getUsers" },
+				default: [],
 				description:
-					"A list of IDs of users who will be board owners (comma-separated)",
+					'Users who will be board owners. Choose from the list, or specify IDs using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 			},
 			{
-				displayName: "Owner Team IDs",
+				displayName: "Owner Team Names or IDs",
 				name: "boardOwnerTeamIds",
-				type: "string",
-				default: "",
+				type: "multiOptions",
+				typeOptions: { loadOptionsMethod: "getTeams" },
+				default: [],
 				description:
-					"A list of IDs of teams that will be board owners (comma-separated)",
+					'Teams that will be board owners. Choose from the list, or specify IDs using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 			},
 			{
-				displayName: "Subscriber IDs",
+				displayName: "Subscriber Names or IDs",
 				name: "boardSubscriberIds",
-				type: "string",
-				default: "",
+				type: "multiOptions",
+				typeOptions: { loadOptionsMethod: "getUsers" },
+				default: [],
 				description:
-					"A list of IDs of users who will subscribe to the board (comma-separated)",
+					'Users who will subscribe to the board. Choose from the list, or specify IDs using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 			},
 			{
-				displayName: "Subscriber Team IDs",
+				displayName: "Subscriber Team Names or IDs",
 				name: "boardSubscriberTeamIds",
-				type: "string",
-				default: "",
+				type: "multiOptions",
+				typeOptions: { loadOptionsMethod: "getTeams" },
+				default: [],
 				description:
-					"A list of IDs of teams that will subscribe to the board (comma-separated)",
+					'Teams that will subscribe to the board. Choose from the list, or specify IDs using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 			},
 			{
 				displayName: "Template ID",
@@ -129,13 +141,6 @@ export const boardCreate: INodeProperties[] = [
 				typeOptions: { minValue: 0 },
 				default: 0,
 				description: "Optional board template ID",
-			},
-			{
-				displayName: "Workspace ID",
-				name: "workspaceId",
-				type: "number",
-				default: 0,
-				description: "The board's workspace ID",
 			},
 		],
 	},
@@ -147,19 +152,19 @@ export async function boardCreateExecute(this: IExecuteFunctions, i: number) {
 
 	const additionalFields = this.getNodeParameter("additionalFields", i, {}) as {
 		templateId?: number;
-		boardOwnerIds?: string;
-		boardOwnerTeamIds?: string;
-		boardSubscriberIds?: string;
-		boardSubscriberTeamIds?: string;
+		boardOwnerIds?: string[];
+		boardOwnerTeamIds?: string[];
+		boardSubscriberIds?: string[];
+		boardSubscriberTeamIds?: string[];
 		description?: string;
 		empty?: boolean;
-		folderId?: number;
+		folderId?: unknown;
 		itemNickname?: {
 			plural?: string;
 			singular?: string;
 			presetType?: string;
 		};
-		workspaceId?: number;
+		workspaceId?: unknown;
 	};
 
 	const variables: IDataObject = { name, boardKind };
@@ -173,34 +178,35 @@ export async function boardCreateExecute(this: IExecuteFunctions, i: number) {
 		"board_kind: $boardKind",
 	];
 
-	if (additionalFields.boardOwnerIds) {
-		variables.boardOwnerIds = additionalFields.boardOwnerIds
-			.split(",")
-			.map((id) => id.trim());
+	if (additionalFields.boardOwnerIds && additionalFields.boardOwnerIds.length) {
+		variables.boardOwnerIds = additionalFields.boardOwnerIds;
 		queryParams.push("$boardOwnerIds: [ID!]");
 		mutationArgs.push("board_owner_ids: $boardOwnerIds");
 	}
 
-	if (additionalFields.boardOwnerTeamIds) {
-		variables.boardOwnerTeamIds = additionalFields.boardOwnerTeamIds
-			.split(",")
-			.map((id) => id.trim());
+	if (
+		additionalFields.boardOwnerTeamIds &&
+		additionalFields.boardOwnerTeamIds.length
+	) {
+		variables.boardOwnerTeamIds = additionalFields.boardOwnerTeamIds;
 		queryParams.push("$boardOwnerTeamIds: [ID!]");
 		mutationArgs.push("board_owner_team_ids: $boardOwnerTeamIds");
 	}
 
-	if (additionalFields.boardSubscriberIds) {
-		variables.boardSubscriberIds = additionalFields.boardSubscriberIds
-			.split(",")
-			.map((id) => id.trim());
+	if (
+		additionalFields.boardSubscriberIds &&
+		additionalFields.boardSubscriberIds.length
+	) {
+		variables.boardSubscriberIds = additionalFields.boardSubscriberIds;
 		queryParams.push("$boardSubscriberIds: [ID!]");
 		mutationArgs.push("board_subscriber_ids: $boardSubscriberIds");
 	}
 
-	if (additionalFields.boardSubscriberTeamIds) {
-		variables.boardSubscriberTeamIds = additionalFields.boardSubscriberTeamIds
-			.split(",")
-			.map((id) => id.trim());
+	if (
+		additionalFields.boardSubscriberTeamIds &&
+		additionalFields.boardSubscriberTeamIds.length
+	) {
+		variables.boardSubscriberTeamIds = additionalFields.boardSubscriberTeamIds;
 		queryParams.push("$boardSubscriberTeamIds: [ID!]");
 		mutationArgs.push("board_subscriber_teams_ids: $boardSubscriberTeamIds");
 	}
@@ -217,8 +223,9 @@ export async function boardCreateExecute(this: IExecuteFunctions, i: number) {
 		mutationArgs.push("empty: $empty");
 	}
 
-	if (additionalFields.folderId) {
-		variables.folderId = String(additionalFields.folderId);
+	const folderId = extractResourceLocatorValue(additionalFields.folderId);
+	if (folderId) {
+		variables.folderId = folderId;
 		queryParams.push("$folderId: ID");
 		mutationArgs.push("folder_id: $folderId");
 	}
@@ -250,8 +257,9 @@ export async function boardCreateExecute(this: IExecuteFunctions, i: number) {
 		mutationArgs.push("template_id: $templateId");
 	}
 
-	if (additionalFields.workspaceId) {
-		variables.workspaceId = String(additionalFields.workspaceId);
+	const workspaceId = extractResourceLocatorValue(additionalFields.workspaceId);
+	if (workspaceId) {
+		variables.workspaceId = workspaceId;
 		queryParams.push("$workspaceId: ID");
 		mutationArgs.push("workspace_id: $workspaceId");
 	}

@@ -5,22 +5,21 @@ import {
 } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
+import {
+	extractResourceLocatorValue,
+	itemResourceLocator,
+} from "../../../utils/resourceLocator";
 
 export const boardSubitemCreate: INodeProperties[] = [
-	{
-		displayName: "Parent Item ID",
+	itemResourceLocator({
+		displayName: "Parent Item",
 		name: "itemId",
-		type: "string",
-		default: "",
 		required: true,
+		description: "The parent item to attach the subitem to",
 		displayOptions: {
-			show: {
-				resource: ["boardSubitem"],
-				operation: ["create"],
-			},
+			show: { resource: ["boardSubitem"], operation: ["create"] },
 		},
-		description: "The ID of the parent item to attach the subitem to",
-	},
+	}),
 	{
 		displayName: "Subitem Name",
 		name: "name",
@@ -67,7 +66,9 @@ export async function boardSubitemCreateExecute(
 	this: IExecuteFunctions,
 	i: number,
 ) {
-	const parentItemId = this.getNodeParameter("itemId", i);
+	const parentItemId = extractResourceLocatorValue(
+		this.getNodeParameter("itemId", i),
+	);
 	const subitemName = this.getNodeParameter("name", i) as string;
 	const additionalFields = this.getNodeParameter("additionalFields", i, {}) as {
 		columnValues?: string;

@@ -1,26 +1,21 @@
 import type { IExecuteFunctions, INodeProperties } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
+import {
+	boardResourceLocator,
+	extractResourceLocatorValue,
+} from "../../../utils/resourceLocator";
 
 export const boardGroupCreate: INodeProperties[] = [
-	{
-		displayName: "Board Name or ID",
+	boardResourceLocator({
+		displayName: "Board",
 		name: "boardId",
-		type: "options",
-		typeOptions: {
-			loadOptionsMethod: "getBoards",
-		},
-		default: "",
 		required: true,
+		description: "The board to create the group in",
 		displayOptions: {
-			show: {
-				resource: ["boardGroup"],
-				operation: ["create"],
-			},
+			show: { resource: ["boardGroup"], operation: ["create"] },
 		},
-		description:
-			'Choose from the list, or specify an ID using an expression. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
-	},
+	}),
 	{
 		displayName: "Name",
 		name: "name",
@@ -41,7 +36,9 @@ export async function boardGroupCreateExecute(
 	this: IExecuteFunctions,
 	i: number,
 ) {
-	const boardId = this.getNodeParameter("boardId", i);
+	const boardId = extractResourceLocatorValue(
+		this.getNodeParameter("boardId", i),
+	);
 	const name = this.getNodeParameter("name", i) as string;
 
 	const body: IGraphqlBody = {

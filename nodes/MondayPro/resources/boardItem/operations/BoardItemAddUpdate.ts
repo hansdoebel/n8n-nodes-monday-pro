@@ -1,19 +1,21 @@
 import type { IExecuteFunctions, INodeProperties } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
+import {
+	extractResourceLocatorValue,
+	itemResourceLocator,
+} from "../../../utils/resourceLocator";
 
 export const boardItemAddUpdate: INodeProperties[] = [
-	{
-		displayName: "Item ID",
+	itemResourceLocator({
+		displayName: "Item",
 		name: "itemId",
-		type: "string",
-		default: "",
 		required: true,
+		description: "The item to add the update to",
 		displayOptions: {
 			show: { resource: ["boardItem"], operation: ["addUpdate"] },
 		},
-		description: "The unique identifier of the item to add update to",
-	},
+	}),
 	{
 		displayName: "Update Text",
 		name: "value",
@@ -31,7 +33,9 @@ export async function boardItemAddUpdateExecute(
 	this: IExecuteFunctions,
 	i: number,
 ) {
-	const itemId = this.getNodeParameter("itemId", i);
+	const itemId = extractResourceLocatorValue(
+		this.getNodeParameter("itemId", i),
+	);
 	const value = this.getNodeParameter("value", i) as string;
 
 	const body: IGraphqlBody = {

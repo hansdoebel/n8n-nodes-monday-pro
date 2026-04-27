@@ -5,21 +5,23 @@ import type {
 } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
+import {
+	boardResourceLocator,
+	extractResourceLocatorValue,
+	folderResourceLocator,
+	workspaceResourceLocator,
+} from "../../../utils/resourceLocator";
 
 export const boardUpdateHierarchy: INodeProperties[] = [
-	{
-		displayName: "Board Name or ID",
+	boardResourceLocator({
+		displayName: "Board",
 		name: "boardId",
-		type: "options",
-		typeOptions: { loadOptionsMethod: "getBoards" },
-		default: "",
 		required: true,
+		description: "The board whose hierarchy to update",
 		displayOptions: {
 			show: { resource: ["board"], operation: ["updateHierarchy"] },
 		},
-		description:
-			'Board unique identifier. Choose from the list or specify by ID using an expression. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
-	},
+	}),
 	{
 		displayName: "Additional Fields",
 		name: "additionalFields",
@@ -37,18 +39,16 @@ export const boardUpdateHierarchy: INodeProperties[] = [
 				type: "number",
 				default: 0,
 			},
-			{
-				displayName: "Folder ID",
-				name: "folderId",
-				type: "number",
-				default: 0,
-			},
-			{
-				displayName: "Workspace ID",
+			workspaceResourceLocator({
+				displayName: "Workspace",
 				name: "workspaceId",
-				type: "number",
-				default: 0,
-			},
+				description: "The destination workspace",
+			}),
+			folderResourceLocator({
+				displayName: "Folder",
+				name: "folderId",
+				description: "The destination folder",
+			}),
 			{
 				displayName: "Position",
 				name: "position",
@@ -68,7 +68,8 @@ export const boardUpdateHierarchy: INodeProperties[] = [
 						name: "objectId",
 						type: "string",
 						default: "",
-						description: "The object ID for positioning",
+						description:
+							"ID of the reference object (Board, Folder, or Overview) to position relative to",
 					},
 					{
 						displayName: "Object Type",
@@ -92,15 +93,17 @@ export async function boardUpdateHierarchyExecute(
 	this: IExecuteFunctions,
 	i: number,
 ) {
-	const boardId = this.getNodeParameter("boardId", i);
+	const boardId = extractResourceLocatorValue(
+		this.getNodeParameter("boardId", i),
+	);
 	const additionalFieldsParam = this.getNodeParameter(
 		"additionalFields",
 		i,
 		{},
 	) as {
 		accountProductId?: number;
-		folderId?: number;
-		workspaceId?: number;
+		folderId?: unknown;
+		workspaceId?: unknown;
 		position?: {
 			objectId?: string;
 			objectType?: string;
@@ -120,14 +123,18 @@ export async function boardUpdateHierarchyExecute(
 		attributeFields.push("account_product_id: $accountProductId");
 	}
 
-	if (additionalFieldsParam.folderId) {
-		variables.folderId = String(additionalFieldsParam.folderId);
+	const folderId = extractResourceLocatorValue(additionalFieldsParam.folderId);
+	if (folderId) {
+		variables.folderId = folderId;
 		queryParams.push("$folderId: ID");
 		attributeFields.push("folder_id: $folderId");
 	}
 
-	if (additionalFieldsParam.workspaceId) {
-		variables.workspaceId = String(additionalFieldsParam.workspaceId);
+	const workspaceId = extractResourceLocatorValue(
+		additionalFieldsParam.workspaceId,
+	);
+	if (workspaceId) {
+		variables.workspaceId = workspaceId;
 		queryParams.push("$workspaceId: ID");
 		attributeFields.push("workspace_id: $workspaceId");
 	}

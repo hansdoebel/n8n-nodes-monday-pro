@@ -1,19 +1,22 @@
 import type { IExecuteFunctions, INodeProperties } from "n8n-workflow";
 import type { IGraphqlBody } from "../../../types";
 import { mondayProApiRequest } from "../../../utils/GenericFunctions";
+import {
+	extractResourceLocatorValue,
+	folderResourceLocator,
+	workspaceResourceLocator,
+} from "../../../utils/resourceLocator";
 
 export const folderUpdate: INodeProperties[] = [
-	{
-		displayName: "Folder ID",
+	folderResourceLocator({
+		displayName: "Folder",
 		name: "folderId",
-		type: "string",
-		default: "",
 		required: true,
+		description: "The folder to update",
 		displayOptions: {
 			show: { resource: ["folder"], operation: ["update"] },
 		},
-		description: "The ID of the folder to update",
-	},
+	}),
 	{
 		displayName: "Update Fields",
 		name: "updateFields",
@@ -46,32 +49,35 @@ export const folderUpdate: INodeProperties[] = [
 					{ name: "Done Green", value: "DONE_GREEN" },
 				],
 			},
-			{
-				displayName: "Parent Folder ID",
+			folderResourceLocator({
+				displayName: "Parent Folder",
 				name: "parentFolderId",
-				type: "string",
-				default: "",
-				description: "ID of the new parent folder",
-			},
-			{
-				displayName: "Workspace ID",
+				description:
+					"New parent folder. Cascades from the workspace selected below if set.",
+			}),
+			workspaceResourceLocator({
+				displayName: "Workspace",
 				name: "workspaceId",
-				type: "string",
-				default: "",
-				description: "ID of the workspace to move this folder to",
-			},
+				description: "Workspace to move this folder to",
+			}),
 		],
 	},
 ];
 
 export async function folderUpdateExecute(this: IExecuteFunctions, i: number) {
-	const folderId = this.getNodeParameter("folderId", i) as string;
+	const folderId = extractResourceLocatorValue(
+		this.getNodeParameter("folderId", i),
+	);
 	const updateFields = this.getNodeParameter("updateFields", i, {}) as {
 		name?: string;
 		color?: string;
-		parentFolderId?: string;
-		workspaceId?: string;
+		parentFolderId?: unknown;
+		workspaceId?: unknown;
 	};
+	const parentFolderId = extractResourceLocatorValue(
+		updateFields.parentFolderId,
+	);
+	const workspaceId = extractResourceLocatorValue(updateFields.workspaceId);
 
 	const body: IGraphqlBody = {
 		query: `mutation (
@@ -99,10 +105,8 @@ export async function folderUpdateExecute(this: IExecuteFunctions, i: number) {
 			folderId,
 			...(updateFields.name && { name: updateFields.name }),
 			...(updateFields.color && { color: updateFields.color }),
-			...(updateFields.parentFolderId &&
-				{ parentFolderId: updateFields.parentFolderId }),
-			...(updateFields.workspaceId &&
-				{ workspaceId: updateFields.workspaceId }),
+			...(parentFolderId && { parentFolderId }),
+			...(workspaceId && { workspaceId }),
 		},
 	};
 
