@@ -1,76 +1,165 @@
-# n8n-nodes-monday-pro
+<h1 align="center">
+  <br>
+  n8n-nodes-monday-pro
+  <br>
+</h1>
 
-[n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
+<p align="center">
+	<img alt="NPM Version" src="https://img.shields.io/npm/v/n8n-nodes-monday-pro">
+	<img alt="GitHub License" src="https://img.shields.io/github/license/hansdoebel/n8n-nodes-monday-pro">
+	<img alt="NPM Downloads" src="https://img.shields.io/npm/dm/n8n-nodes-monday-pro">
+	<img alt="NPM Last Update" src="https://img.shields.io/npm/last-update/n8n-nodes-monday-pro">
+	<img alt="Static Badge" src="https://img.shields.io/badge/n8n-2.18.1-EA4B71?logo=n8n">
+</p>
 
-This is a custom n8n community node providing an extended integration with Monday.com, including several additional features not covered by the official node.
+<p align="center">
+  <a href="#installation">Installation</a> |
+  <a href="#credentials">Credentials</a> |
+  <a href="#resources">Resources</a> |
+  <a href="#development">Development</a> |
+  <a href="#license">License</a>
+</p>
 
-It is an independent enhancement created for advanced workflow use cases.
+---
 
-## Table of Contents
-
-- [Features](#features)
-- [Installation](#installation)
-- [Resources](#resources)
-- [Version history](#version-history)
-
-## Features
-
-- **Current API-Version: 2025-10**
-- OAuth2 and API Token authentication
-
-Create and manage:
-
-- **Boards**
-- **Board columns**
-- **Board groups**
-- **Board items** (+ with options to filter requested items and choose response data via JSON)
-- **Subitems** *(new – not included in the official node!)*
-- **Webhooks** *(new – not included in the official node!)*
-- **Folders** *(new – not included in the official node!)*
-- Update column values (single or multiple)
-- Query items by column value
-- Pagination support for large boards
-
-This package is ideal if you want more control over Monday.com data or if you need functionality missing in the default n8n Monday node.
+A custom n8n community node providing an extended integration with [Monday.com](https://monday.com), including several additional features not covered by the official node.
 
 ## Installation
 
-Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
+1. Create a new workflow or open an existing one
+2. Open the nodes panel by selecting **+** or pressing **N**
+3. Search for **Monday Pro**
+4. Select **Install** to install the node for your instance
 
-1. Go to **Settings** > **Community Nodes.**
-2. Select **Install.**
-3. Find the node you want to install:
+## Credentials
 
-   a.) Select **Browse**. n8n takes you to an npm search results page, showing all npm packages tagged with the keyword `n8n-community-node-package`.
+This node supports two authentication methods with the Monday.com API.
 
-   b.) Browse the list of results. You can filter the results or add more keywords.
-
-   c.) Once you find the package you want, make a note of the package name. If you want to install a specific version, make a note of the version number as well.
-
-   d.) Return to n8n.
-
-4. Enter the npm package name, and version number if required.
-5. Agree to the risks of using community nodes: select I understand the risks of installing unverified code from a public source.
-6. Select Install. n8n installs the node, and returns to the Community Nodes list in Settings.
+1. **OAuth2** -- Use the built-in OAuth2 flow to connect your Monday.com account
+2. **API Token** -- Provide a personal API token from your Monday.com account
+   1. Log in to [Monday.com](https://monday.com)
+   2. Navigate to **Avatar (bottom-left)** > **Administration** > **Connections** > **API**
+   3. Copy your **API Token**
+   4. In n8n, create a **Monday Pro API** credential and paste the token
 
 ## Resources
 
-- [n8n Website](https://n8n.io/)
-- [n8n community nodes documentation](https://docs.n8n.io/integrations/community-nodes/)
-- [Monday.com Website](https://monday.com/)
-- [Monday.com Open API reference](https://developer.monday.com/api-reference/)
-- [GitHub Repository](https://github.com/hansdoebel/n8n-nodes-monday-pro)
+<details>
+<summary><strong>Board</strong></summary>
 
-## Version history
+| Operation | Description |
+| --------- | ----------- |
+| Archive | Archive a board |
+| Create | Create a new board |
+| Delete | Delete a board |
+| Duplicate | Duplicate a board |
+| Get | Get a board |
+| Get Many | Get many boards |
+| Set Permission | Set a board's default role/permissions |
+| Update | Update a board |
+| Update Hierarchy | Update a board's position, workspace, or product |
 
-### Changelog
+</details>
 
-- **`0.0.9`** – Added operation to create many board webhooks
-- **`0.0.8`** – Added board: delete, duplicate, update, updateHierarchy, setBoardPermission; adjusted Create board operation. Added tests, constants, utils, types
-- **`0.0.7`** – Added docs operations: get, create, delete
-- **`0.0.6`** – Complete refactor of descriptions, operations, and execution logic
-- **`0.0.5`** – Fixed folder operations: get, create, delete
-- **`0.0.4`** – Added folder operations: get many, update, delete, create
-- **`0.0.3`** – Fix
-- **`0.0.2`** – Added options to filter requested items and choose response data via JSON
-- **`0.0.1`** – Initial release with extended Monday.com API support, Subitem creation, and create/delete/list Webhooks
+<details>
+<summary><strong>Board Column</strong></summary>
+
+| Operation | Description |
+| --------- | ----------- |
+| Create | Create a new column |
+| Get Many | Get many columns |
+
+</details>
+
+<details>
+<summary><strong>Board Group</strong></summary>
+
+| Operation | Description |
+| --------- | ----------- |
+| Create | Create a group in a board |
+| Delete | Delete a group in a board |
+| Get Many | Get list of groups in a board |
+
+</details>
+
+<details>
+<summary><strong>Board Item</strong></summary>
+
+| Operation | Description |
+| --------- | ----------- |
+| Add Update | Add an update to an item |
+| Change Column Value | Change a column value for a board item |
+| Change Multiple Column Values | Change multiple column values for a board item |
+| Create | Create an item in a board's group |
+| Delete | Delete an item |
+| Get | Get an item |
+| Get By Column Value | Get items by column value |
+| Get Filtered | Get items using items_page filters |
+| Get Many | Get many items |
+| Move | Move item to group |
+
+</details>
+
+<details>
+<summary><strong>Subitem</strong></summary>
+
+| Operation | Description |
+| --------- | ----------- |
+| Create | Create a subitem under a parent item |
+
+</details>
+
+<details>
+<summary><strong>Webhook</strong></summary>
+
+| Operation | Description |
+| --------- | ----------- |
+| Create | Create a webhook for a board |
+| Create Many | Create many webhooks for a board |
+| Delete | Delete an existing webhook by its ID |
+| Get Many | List webhooks created on a board |
+
+</details>
+
+<details>
+<summary><strong>Folder</strong></summary>
+
+| Operation | Description |
+| --------- | ----------- |
+| Create | Create a folder inside a workspace |
+| Delete | Delete a folder |
+| Get Many | List folders in one or more workspaces |
+| Update | Update an existing folder |
+
+</details>
+
+<details>
+<summary><strong>Doc</strong></summary>
+
+| Operation | Description |
+| --------- | ----------- |
+| Create | Create a new doc |
+| Delete | Delete a doc by ID |
+| Get | Retrieve a doc by ID |
+
+</details>
+
+## Development
+
+```bash
+git clone https://github.com/hansdoebel/n8n-nodes-monday-pro.git
+cd n8n-nodes-monday-pro
+npm install
+npm run build
+npm run lint
+```
+
+## License
+
+[MIT](LICENSE.md)
+
+<p align="center">
+  <a href="https://github.com/hansdoebel/n8n-nodes-monday-pro">GitHub</a> |
+  <a href="https://github.com/hansdoebel/n8n-nodes-monday-pro/issues">Issues</a> |
+  <a href="https://developer.monday.com/api-reference">Monday.com API Docs</a>
+</p>
