@@ -1,13 +1,13 @@
+import { beforeEach, describe, expect, it, mock } from "bun:test";
+
+const mockMondayProApiRequest = mock();
+
+mock.module("@utils/GenericFunctions", () => ({
+	mondayProApiRequest: mockMondayProApiRequest,
+}));
+
 import { boardCreateExecute } from "../../nodes/MondayPro/resources/board/operations/BoardCreate";
 import { ExecuteFunctionsMock } from "../mocks/ExecuteFunctionsMock";
-
-jest.mock("@utils/GenericFunctions");
-
-import { mondayProApiRequest } from "@utils/GenericFunctions";
-
-const mockMondayProApiRequest = mondayProApiRequest as jest.MockedFunction<
-	typeof mondayProApiRequest
->;
 
 describe("boardCreateExecute", () => {
 	beforeEach(() => {
