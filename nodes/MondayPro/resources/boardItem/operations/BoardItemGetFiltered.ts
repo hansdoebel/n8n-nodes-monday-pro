@@ -134,7 +134,7 @@ export async function boardItemGetFilteredExecute(
 		},
 	};
 
-	if (returnAll) {
+	if (returnAll && boardIds.length === 1) {
 		return await mondayProApiPaginatedRequest.call(
 			this,
 			"data.boards[0].items_page",
@@ -144,5 +144,9 @@ export async function boardItemGetFilteredExecute(
 	}
 
 	const response = await mondayProApiRequest.call(this, body);
-	return response.data.boards[0].items_page.items;
+	const boards = (response.data?.boards ?? []) as IDataObject[];
+	return boards.flatMap((board) => {
+		const itemsPage = board.items_page as IDataObject | undefined;
+		return (itemsPage?.items ?? []) as IDataObject[];
+	});
 }

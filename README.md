@@ -149,9 +149,9 @@ This node supports two authentication methods with the Monday.com API.
 ```bash
 git clone https://github.com/hansdoebel/n8n-nodes-monday-pro.git
 cd n8n-nodes-monday-pro
-npm install
-npm run build
-npm run lint
+bun install
+bun run build
+bun run lint
 ```
 
 ## License
