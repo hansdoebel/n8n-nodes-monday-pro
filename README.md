@@ -35,8 +35,8 @@ A custom n8n community node providing an extended integration with [Monday.com](
 
 This node supports two authentication methods with the Monday.com API.
 
-1. **OAuth2** -- Use the built-in OAuth2 flow to connect your Monday.com account
-2. **API Token** -- Provide a personal API token from your Monday.com account
+1. **OAuth2**: Use the built-in OAuth2 flow to connect your Monday.com account
+2. **API Token**: Provide a personal API token from your Monday.com account
    1. Log in to [Monday.com](https://monday.com)
    2. Navigate to **Avatar (bottom-left)** > **Administration** > **Connections** > **API**
    3. Copy your **API Token**
