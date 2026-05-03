@@ -26,6 +26,13 @@ export const boardItemOperations: INodeProperties[] = [
 				action: "Change a column value for a board item",
 			},
 			{
+				name: "Change Column Value (Batched)",
+				value: "changeColumnValueBatched",
+				description:
+					"Change a column value for many board items in a single GraphQL request",
+				action: "Change a column value for many board items",
+			},
+			{
 				name: "Change Multiple Column Values",
 				value: "changeMultipleColumnValues",
 				description: "Change multiple column values for a board item",

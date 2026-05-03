@@ -20,10 +20,21 @@ import * as ListSearch from "./utils/ListSearch";
 
 import * as Ops from "./resources";
 
-type OperationExecuteFn = (
+type PerItemExecuteFn = (
 	this: IExecuteFunctions,
 	i: number,
 ) => Promise<unknown>;
+
+type BatchedExecuteFn = ((
+	this: IExecuteFunctions,
+	items: INodeExecutionData[],
+) => Promise<INodeExecutionData[]>) & { batch: true };
+
+type OperationExecuteFn = PerItemExecuteFn | BatchedExecuteFn;
+
+function isBatchedExecuteFn(fn: unknown): fn is BatchedExecuteFn {
+	return typeof fn === "function" && (fn as { batch?: boolean }).batch === true;
+}
 
 const routers: Record<string, Record<string, OperationExecuteFn>> = {
 	board: Ops.BoardOps as unknown as Record<string, OperationExecuteFn>,
@@ -153,30 +164,34 @@ export class MondayPro implements INodeType {
 		const items = this.getInputData();
 		const results: INodeExecutionData[] = [];
 
+		const resource = this.getNodeParameter(
+			"resource",
+			0,
+		) as keyof typeof routers;
+		const operation = this.getNodeParameter("operation", 0) as string;
+
+		const resourceRouter = routers[resource];
+		const execFn = resourceRouter
+			?.[
+				`${resource}${operation[0].toUpperCase()}${
+					operation.slice(1)
+				}Execute`
+			];
+
+		if (typeof execFn !== "function") {
+			throw new NodeOperationError(
+				this.getNode(),
+				`Unsupported operation: ${resource}.${operation}`,
+			);
+		}
+
+		if (isBatchedExecuteFn(execFn)) {
+			const batchedResults = await execFn.call(this, items);
+			return [batchedResults];
+		}
+
 		for (let i = 0; i < items.length; i++) {
 			try {
-				const resource = this.getNodeParameter(
-					"resource",
-					0,
-				) as keyof typeof routers;
-				const operation = this.getNodeParameter("operation", 0) as string;
-
-				const resourceRouter = routers[resource];
-				const execFn = resourceRouter
-					?.[
-						`${resource}${operation[0].toUpperCase()}${
-							operation.slice(1)
-						}Execute`
-					];
-
-				if (typeof execFn !== "function") {
-					throw new NodeOperationError(
-						this.getNode(),
-						`Unsupported operation: ${resource}.${operation}`,
-						{ itemIndex: i },
-					);
-				}
-
 				const response = await execFn.call(this, i);
 
 				results.push(

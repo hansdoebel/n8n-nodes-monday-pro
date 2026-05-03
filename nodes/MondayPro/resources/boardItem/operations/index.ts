@@ -1,5 +1,6 @@
 export * from "./BoardItemAddUpdate";
 export * from "./BoardItemChangeColumnValue";
+export * from "./BoardItemChangeColumnValueBatched";
 export * from "./BoardItemChangeMultipleColumnValues";
 export * from "./BoardItemCreate";
 export * from "./BoardItemDelete";

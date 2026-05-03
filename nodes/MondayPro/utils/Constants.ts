@@ -35,6 +35,7 @@ export enum BoardGroupOperations {
 export enum BoardItemOperations {
 	ADD_UPDATE = "addUpdate",
 	CHANGE_COLUMN_VALUE = "changeColumnValue",
+	CHANGE_COLUMN_VALUE_BATCHED = "changeColumnValueBatched",
 	CHANGE_MULTIPLE_COLUMN_VALUES = "changeMultipleColumnValues",
 	CREATE = "create",
 	DELETE = "delete",

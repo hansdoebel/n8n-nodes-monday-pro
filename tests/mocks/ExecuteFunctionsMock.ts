@@ -1,15 +1,25 @@
+interface ExecuteFunctionsMockOptions {
+	inputData?: Array<{ json: any }>;
+	continueOnFail?: boolean;
+}
+
 export class ExecuteFunctionsMock {
 	private nodeParameters: Record<string, any> = {};
 	private _helpers: any;
+	private _inputData: Array<{ json: any }>;
+	private _continueOnFail: boolean;
 
 	constructor(
 		nodeParameters: Record<string, any> = {},
 		helpers?: Record<string, any>,
+		options: ExecuteFunctionsMockOptions = {},
 	) {
 		this.nodeParameters = nodeParameters;
 		this._helpers = helpers || {
 			httpRequestWithAuthentication: jest.fn(),
 		};
+		this._inputData = options.inputData ?? [{ json: {} }];
+		this._continueOnFail = options.continueOnFail ?? false;
 	}
 
 	getNodeParameter(
@@ -18,7 +28,9 @@ export class ExecuteFunctionsMock {
 		fallbackValue?: any,
 	): any {
 		const value = this.nodeParameters[parameterName];
-		return value !== undefined ? value : fallbackValue;
+		if (value === undefined) return fallbackValue;
+		if (typeof value === "function") return value(itemIndex);
+		return value;
 	}
 
 	getNode() {
@@ -31,11 +43,11 @@ export class ExecuteFunctionsMock {
 	}
 
 	getInputData() {
-		return [{ json: {} }];
+		return this._inputData;
 	}
 
 	continueOnFail() {
-		return false;
+		return this._continueOnFail;
 	}
 
 	setMockHelper(name: string, implementation: any) {
